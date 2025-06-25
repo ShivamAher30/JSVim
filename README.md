@@ -1,40 +1,356 @@
-# VimJS
+# VimJS - AI-Powered Vim-Style Terminal Editor 🚀
 
-A Vim-inspired terminal-based text editor written in JavaScript
+A modern, feature-rich terminal-based text editor inspired by Vim, enhanced with AI-powered code completion and generation capabilities using the Groq API.
 
-## Features
+![VimJS Demo](https://img.shields.io/badge/Editor-VimJS-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Node.js](https://img.shields.io/badge/node.js-v16+-brightgreen)
 
-- Vim-like modal editing with normal and insert modes
-- **AI-powered code autocompletion** using Groq's LLM API (Mixtral, LLaMA3)
-- Command mode for executing commands (`:w`, `:q`, `:wq`, `:q!`)
-- Relative and absolute line numbers
-- Colorful status line with file info, cursor position, and language detection
-- Comprehensive syntax highlighting with support for 30+ languages
-- Multiple beautiful color themes (Dracula, Nord, Tokyo Night, One Dark, Solarized)
-- Intelligent language detection based on file extension and content
-- Eye-catching animations for file opening and operations
-- Visual notifications and loading indicators
-- File navigation using Vim-like keys (h/j/k/l) or arrow keys
-- Simple file operations (open, edit, save)
-- Terminal UI with borders and scrollbars using blessed library
-- Customizable settings through command mode
+## ✨ Features
 
-## Installation
+### 🎯 Core Editor Features
+- **Vim-inspired Interface** - Familiar modal editing (Normal, Insert, Command modes)
+- **Syntax Highlighting** - Support for JavaScript, TypeScript, Python, C++, HTML, CSS, JSON, and more
+- **Multiple Color Themes** - Dracula, Neon, Ocean, and Sunset themes
+- **Line Numbers** - Absolute and relative line numbering
+- **Live Cursor** - Blinking cursor with smooth navigation
+- **File Operations** - Save, load, and manage files efficiently
 
-Install globally from npm:
+### 🤖 AI-Powered Features
+- **Intelligent Code Completion** - Context-aware suggestions using Groq API
+- **Natural Language Code Generation** - Generate code from plain English descriptions
+- **Code Extension** - Extend existing code with new functionality
+- **Feature Implementation** - Implement specific features on command
+- **Beautiful Animations** - Visual feedback during AI operations
+- **Clean Output** - Advanced sanitization removes HTML, ANSI, and markdown artifacts
 
-```bash
-npm install -g vimjs
+### 🎨 Visual Features
+- **Real-time Syntax Highlighting** - Enhanced highlighting with multiple language support
+- **Animated Welcome Screen** - Stylish startup animations
+- **Status Line** - Shows current mode, file info, cursor position, and AI status
+- **Smooth Animations** - Code generation progress with emojis and live previews
+- **Responsive UI** - Adapts to terminal size changes
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js v16 or higher
+- Terminal with 256-color support
+- Groq API key (for AI features)
+
+### Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone <repository-url>
+   cd cli-opensource-agent
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Set up AI features (optional but recommended):**
+   ```bash
+   cp .env.example .env
+   # Edit .env and add your Groq API key
+   ```
+
+4. **Start editing:**
+   ```bash
+   npm start
+   # or
+   node bin/vimjs.js [filename]
+   ```
+
+## ⌨️ Keyboard Shortcuts
+
+### 🔄 Mode Switching
+| Key | Action | Description |
+|-----|--------|-------------|
+| `i` | Enter Insert Mode | Start typing/editing text |
+| `Esc` | Enter Normal Mode | Navigate and execute commands |
+| `:` | Enter Command Mode | Execute editor commands |
+
+### 🧭 Navigation (Normal Mode)
+| Key | Action | Description |
+|-----|--------|-------------|
+| `h` / `←` | Move Left | Move cursor one character left |
+| `j` / `↓` | Move Down | Move cursor one line down |
+| `k` / `↑` | Move Up | Move cursor one line up |
+| `l` / `→` | Move Right | Move cursor one character right |
+
+### ✏️ Editing (Insert Mode)
+| Key | Action | Description |
+|-----|--------|-------------|
+| `Tab` | AI Completion | Trigger AI code completion |
+| `Enter` | New Line | Insert a new line |
+| `Backspace` | Delete Character | Delete character before cursor |
+| `←` `→` `↑` `↓` | Navigate | Move cursor while in insert mode |
+
+### 🎨 Themes & Settings
+| Shortcut | Action | Description |
+|----------|--------|-------------|
+| `Ctrl+T` | Cycle Theme | Switch between color themes |
+| `Ctrl+C` | Quit | Exit the editor (with confirmation) |
+
+## 💻 Command Mode Reference
+
+### 📁 File Operations
+| Command | Description | Example |
+|---------|-------------|---------|
+| `:w` | Save current file | `:w` |
+| `:q` | Quit editor | `:q` |
+| `:wq` | Save and quit | `:wq` |
+| `:q!` | Force quit without saving | `:q!` |
+
+### ⚙️ Settings Commands
+| Command | Description | Example |
+|---------|-------------|---------|
+| `:set number` | Enable line numbers | `:set number` |
+| `:set nonumber` | Disable line numbers | `:set nonumber` |
+| `:set relativenumber` | Enable relative line numbers | `:set rnu` |
+| `:set norelativenumber` | Disable relative line numbers | `:set nornu` |
+| `:set syntax` | Enable syntax highlighting | `:set syntax` |
+| `:set nosyntax` | Disable syntax highlighting | `:set nosyntax` |
+| `:set` | Show current settings | `:set` |
+
+### 🎨 Theme Commands
+| Command | Description | Available Themes |
+|---------|-------------|------------------|
+| `:themes` | List all themes | Shows all available themes |
+| `:colorscheme <theme>` | Change theme | `dracula`, `neon`, `ocean`, `sunset` |
+| `:cs <theme>` | Change theme (short) | `:cs neon` |
+
+### 🤖 AI Commands
+| Command | Description | Example |
+|---------|-------------|---------|
+| `:ai` | Show AI status | `:ai` |
+| `:toggleAI` | Toggle AI on/off | `:toggleAI` |
+| `:aimodel <model>` | Change AI model | `:aimodel llama3-70b-8192` |
+
+### 🧠 AI Code Generation
+| Command | Description | Example |
+|---------|-------------|---------|
+| `:generate <instruction>` | Generate new code | `:generate create a function to calculate fibonacci numbers` |
+| `:gen <instruction>` | Generate code (short) | `:gen add a REST API endpoint for user login` |
+| `:extend <instruction>` | Extend existing code | `:extend add error handling to this function` |
+| `:implement <instruction>` | Implement feature | `:implement user authentication with JWT tokens` |
+
+### 📖 Help Commands
+| Command | Description |
+|---------|-------------|
+| `:help` | Show detailed help |
+| `:h` | Show help (short) |
+
+## 🤖 AI Features Deep Dive
+
+### Code Completion
+- **Trigger**: Press `Tab` in insert mode
+- **Context-Aware**: Analyzes surrounding code for intelligent suggestions
+- **Multiple Languages**: Works with JavaScript, Python, C++, and more
+- **Clean Output**: Automatically sanitizes AI responses
+
+### Natural Language Code Generation
+Transform plain English into working code:
+
+```
+:generate create a function that sorts an array of objects by a specific property
+:extend add input validation and error handling
+:implement a caching mechanism for expensive operations
 ```
 
-Or install from the repository:
+### AI Models Available
+- `llama3-8b-8192` (default)
+- `llama3-70b-8192`
+- `llama-3.1-8b-instant`
+- `llama-3.1-70b-versatile`
+- `gemma-7b-it`
+- `gemma2-9b-it`
+
+## 🎨 Available Themes
+
+### Dracula (Default)
+- Dark purple background
+- Vibrant syntax colors
+- Easy on the eyes
+
+### Neon
+- Electric cyan and magenta
+- High contrast
+- Futuristic feel
+
+### Ocean
+- Blue and teal tones
+- Calming colors
+- Professional look
+
+### Sunset
+- Warm oranges and reds
+- Cozy atmosphere
+- Creative inspiration
+
+## 📦 Dependencies
+
+### Core Dependencies
+| Package | Version | Purpose |
+|---------|---------|---------|
+| `blessed` | ^0.1.81 | Terminal UI framework |
+| `chalk` | ^4.1.2 | Terminal text styling |
+| `highlight.js` | ^11.11.1 | Syntax highlighting engine |
+| `node-fetch` | ^2.7.0 | HTTP requests for AI API |
+| `dotenv` | ^16.4.5 | Environment variable management |
+
+### Visual Enhancement
+| Package | Version | Purpose |
+|---------|---------|---------|
+| `chalk-animation` | ^2.0.3 | Animated text effects |
+| `figlet` | ^1.8.1 | ASCII art text |
+| `gradient-string` | ^3.0.0 | Gradient text effects |
+| `nanospinner` | ^1.2.2 | Loading spinners |
+| `ora` | ^8.2.0 | Terminal spinners |
+
+### Utilities
+| Package | Version | Purpose |
+|---------|---------|---------|
+| `fs-extra` | ^11.1.1 | Enhanced file system operations |
+| `yargs` | ^17.7.2 | Command line argument parsing |
+| `cardinal` | ^2.1.1 | JavaScript syntax highlighting |
+
+## 🔧 Configuration
+
+### Environment Variables
+Create a `.env` file in the project root:
 
 ```bash
-git clone https://github.com/yourusername/vimjs.git
-cd vimjs
-npm install
-npm link
+# Groq API Configuration
+GROQ_API_KEY=your_groq_api_key_here
+
+# AI Settings (optional)
+AI_MODEL=llama3-8b-8192
+AI_ENABLED=true
 ```
+
+### Getting a Groq API Key
+1. Visit [Groq Console](https://console.groq.com/keys)
+2. Sign up for a free account
+3. Generate an API key
+4. Add it to your `.env` file
+
+## 🎯 Usage Examples
+
+### Basic Editing Session
+```bash
+# Start with a new file
+npm start newfile.js
+
+# Or open existing file
+npm start existing-file.py
+```
+
+### AI-Powered Development Workflow
+1. **Start Editor**: `npm start app.js`
+2. **Enable AI**: Ensure API key is configured
+3. **Code with AI**: Use `Tab` for completions
+4. **Generate Code**: `:gen create a REST API server`
+5. **Extend Code**: `:extend add authentication middleware`
+6. **Save & Exit**: `:wq`
+
+### Theme Customization
+```
+:themes              # List all themes
+:cs neon            # Switch to neon theme
+:set relativenumber # Enable relative line numbers
+```
+
+## 🚀 Advanced Features
+
+### Syntax Highlighting Support
+- **JavaScript/TypeScript** - Full ES6+ support
+- **Python** - Python 3.x syntax
+- **C/C++** - Modern C++ standards
+- **HTML/CSS** - Web development
+- **JSON** - Configuration files
+- **Markdown** - Documentation
+- **SQL** - Database queries
+- **Shell Scripts** - Bash/PowerShell
+
+### AI Completion Intelligence
+- **Context Analysis** - Understands function scope and variables
+- **Language Detection** - Adapts to current file type
+- **Error Prevention** - Suggests syntactically correct code
+- **Best Practices** - Follows coding conventions
+
+### Animation System
+- **Welcome Screen** - Animated startup with file info
+- **Code Generation** - Live progress with emojis
+- **Success/Error States** - Visual feedback
+- **Smooth Transitions** - Polished user experience
+
+## 🔍 Troubleshooting
+
+### Common Issues
+
+#### AI Features Not Working
+- Ensure `GROQ_API_KEY` is set in `.env`
+- Check internet connection
+- Verify API key is valid
+- Try `:toggleAI` to restart AI service
+
+#### Syntax Highlighting Issues
+- File extension must be recognized
+- Use `:set syntax` to enable highlighting
+- Restart editor if colors don't appear
+
+#### Performance Issues
+- Large files may be slower
+- Disable AI completion for better performance
+- Use `:set nosyntax` for very large files
+
+### Getting Help
+- Use `:help` in the editor for quick reference
+- Check the console for error messages
+- Ensure all dependencies are installed
+
+## 📈 Performance Tips
+
+### For Large Files
+- Disable relative line numbers: `:set nornu`
+- Turn off syntax highlighting: `:set nosyntax`
+- Disable AI features if not needed
+
+### For Better AI Performance
+- Keep context concise and relevant
+- Use specific, clear instructions for code generation
+- Let AI complete before requesting new suggestions
+
+## 🤝 Contributing
+
+We welcome contributions! Please feel free to:
+- Report bugs
+- Suggest new features
+- Submit pull requests
+- Improve documentation
+
+## 📄 License
+
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+## 🙏 Acknowledgments
+
+- **Vim** - For the inspiration and editing paradigm
+- **Groq** - For providing the AI API
+- **Blessed** - For the excellent terminal UI framework
+- **Highlight.js** - For syntax highlighting capabilities
+
+---
+
+**Happy Coding with VimJS! 🚀✨**
+
+*Made with ❤️ for developers who love terminal-based tools and AI-assisted coding.*
+
+
 
 ### AI Autocompletion Setup
 
