@@ -19,6 +19,9 @@ class CommandParser {
       'themes': this.listThemes.bind(this),
       'colorscheme': this.changeColorScheme.bind(this),
       'cs': this.changeColorScheme.bind(this),
+      'toggleAI': this.toggleAI.bind(this),
+      'ai': this.showAIStatus.bind(this),
+      'aimodel': this.changeAIModel.bind(this),
     };
   }
 
@@ -216,6 +219,61 @@ class CommandParser {
     // Force a full render to apply the theme
     this.editor.render();
     
+    return true;
+  }
+
+  /**
+   * Toggle AI autocompletion
+   * @returns {boolean}
+   */
+  toggleAI() {
+    this.editor.toggleAI();
+    return true;
+  }
+
+  /**
+   * Show AI status
+   * @returns {boolean}
+   */
+  showAIStatus() {
+    const status = this.editor.getAIStatus();
+    let message = `[AI] Status: ${status.enabled ? 'enabled' : 'disabled'}`;
+    
+    if (status.enabled) {
+      message += ` | Model: ${status.model}`;
+      message += ` | API Key: ${status.apiKeyConfigured ? 'configured' : 'missing'}`;
+      message += ` | Available: ${status.available ? 'yes' : 'no'}`;
+    }
+    
+    this.editor.showMessage(message, 5000);
+    return true;
+  }
+
+  /**
+   * Change AI model
+   * @param {string} commandStr - Command string
+   * @returns {boolean}
+   */
+  changeAIModel(commandStr) {
+    const parts = commandStr.split(' ');
+    
+    if (parts.length === 1) {
+      const currentModel = this.editor.aiService.getModel();
+      const supportedModels = this.editor.aiService.getSupportedModels();
+      this.editor.showMessage(`Current model: ${currentModel}. Available: ${supportedModels.join(', ')}`, 5000);
+      return true;
+    }
+    
+    const modelName = parts[1];
+    const success = this.editor.aiService.setModel(modelName);
+    
+    if (!success) {
+      const supportedModels = this.editor.aiService.getSupportedModels();
+      this.editor.showMessage(`Unknown model: '${modelName}'. Available: ${supportedModels.join(', ')}`, 5000);
+      return false;
+    }
+    
+    this.editor.showMessage(`AI model changed to: ${modelName}`);
     return true;
   }
 }

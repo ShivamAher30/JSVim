@@ -223,6 +223,14 @@ class TextBuffer {
   isModified() {
     return this.modified;
   }
+
+  /**
+   * Get current cursor position
+   * @returns {Object} - Cursor position {row, col}
+   */
+  getCursor() {
+    return { ...this.cursor };
+  }
 }
 
 module.exports = TextBuffer;

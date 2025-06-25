@@ -6,6 +6,7 @@ const CommandParser = require('./command-parser');
 const StatusLine = require('./status-line');
 const SyntaxHighlighter = require('./enhanced-syntax-highlighter');
 const Animations = require('./animations');
+const AIService = require('./ai-service');
 
 /**
  * Main Editor class
@@ -26,6 +27,7 @@ class Editor {
     this.modeManager = new ModeManager();
     this.commandParser = new CommandParser(this);
     this.syntaxHighlighter = new SyntaxHighlighter();
+    this.aiService = new AIService();
     
     this.screen = null;
     this.contentBox = null;
@@ -36,6 +38,7 @@ class Editor {
     this.showLineNumbers = true; // Whether to show line numbers
     this.relativeLineNumbers = true; // Whether to show relative line numbers
     this.syntaxHighlighting = true; // Whether to enable syntax highlighting
+    this.aiCompletionInProgress = false; // Track if AI completion is in progress
   }
 
   /**
@@ -112,13 +115,13 @@ class Editor {
     });
     
     // Handle key events
-    this.screen.on('keypress', (ch, key) => {
+    this.screen.on('keypress', async (ch, key) => {
       if (!key) return;
       
       if (this.modeManager.isNormalMode()) {
         this.handleNormalModeKeys(ch, key);
       } else if (this.modeManager.isInsertMode()) {
-        this.handleInsertModeKeys(ch, key);
+        await this.handleInsertModeKeys(ch, key);
       } else if (this.modeManager.isCommandMode()) {
         this.handleCommandModeKeys(ch, key);
       }
@@ -187,7 +190,7 @@ class Editor {
    * @param {string} ch - Character
    * @param {object} key - Key info
    */
-  handleInsertModeKeys(ch, key) {
+  async handleInsertModeKeys(ch, key) {
     switch (key.name) {
       case 'escape':
         this.modeManager.setNormalMode();
@@ -197,6 +200,15 @@ class Editor {
         break;
       case 'backspace':
         this.buffer.deleteCharacter();
+        break;
+      case 'tab':
+        // AI autocompletion on Tab key
+        if (this.aiService.isAvailable() && !this.aiCompletionInProgress) {
+          await this.handleAICompletion();
+        } else {
+          // Fallback to regular tab behavior
+          this.buffer.insertCharacter('\t');
+        }
         break;
       case 'left':
         this.buffer.moveCursorLeft();
@@ -423,6 +435,117 @@ class Editor {
     const nextTheme = themes[nextIndex];
     
     return this.setTheme(nextTheme);
+  }
+
+  /**
+   * Handle AI-powered code completion
+   */
+  async handleAICompletion() {
+    if (this.aiCompletionInProgress) {
+      return;
+    }
+
+    this.aiCompletionInProgress = true;
+
+    try {
+      // Show loading message
+      this.showMessage('[AI] Fetching suggestion...', 0, 'info');
+      this.render(); // Force render to show the message immediately
+
+      // Get current context
+      const cursor = this.buffer.getCursor();
+      const lines = this.buffer.getContent();
+      const context = this.aiService.getCodeContext(lines, cursor.row, cursor.col);
+
+      // Get AI suggestion
+      const suggestion = await this.aiService.getAISuggestion(context);
+
+      if (suggestion && suggestion.length > 0) {
+        // Insert the suggestion at current cursor position
+        this.insertAISuggestion(suggestion);
+        this.showMessage(`[AI] Suggestion applied`, 2000, 'success');
+      } else {
+        this.showMessage('[AI] No suggestion available', 2000, 'warning');
+      }
+
+    } catch (error) {
+      console.error('AI completion error:', error);
+      
+      // Show user-friendly error messages
+      let errorMessage = '[AI] Failed to fetch completion';
+      
+      if (error.message.includes('timeout')) {
+        errorMessage = '[AI] Request timeout - try again';
+      } else if (error.message.includes('Rate limit')) {
+        errorMessage = '[AI] Rate limit exceeded';
+      } else if (error.message.includes('Authentication')) {
+        errorMessage = '[AI] Check API key configuration';
+      } else if (error.message.includes('not available')) {
+        errorMessage = '[AI] Service not configured';
+      }
+      
+      this.showMessage(errorMessage, 3000, 'error');
+    } finally {
+      this.aiCompletionInProgress = false;
+    }
+  }
+
+  /**
+   * Insert AI suggestion into the buffer
+   * @param {string} suggestion - The AI-generated code suggestion
+   */
+  insertAISuggestion(suggestion) {
+    // Clean up the suggestion - remove leading/trailing whitespace
+    suggestion = suggestion.trim();
+    
+    if (!suggestion) {
+      return;
+    }
+
+    // Split suggestion into lines if it contains newlines  
+    const suggestionLines = suggestion.split('\n');
+    
+    // Insert each line
+    for (let i = 0; i < suggestionLines.length; i++) {
+      const line = suggestionLines[i];
+      
+      if (i === 0) {
+        // First line: insert at current cursor position
+        for (const char of line) {
+          this.buffer.insertCharacter(char);
+        }
+      } else {
+        // Subsequent lines: insert newline first, then the content
+        this.buffer.insertNewLine();
+        for (const char of line) {
+          this.buffer.insertCharacter(char);
+        }
+      }
+    }
+  }
+
+  /**
+   * Toggle AI completion on/off
+   * @returns {boolean} - New AI enabled state
+   */
+  toggleAI() {
+    const newState = this.aiService.toggle();
+    const status = newState ? 'enabled' : 'disabled';
+    this.showMessage(`[AI] Autocompletion ${status}`, 2000, 'info');
+    return newState;
+  }
+
+  /**
+   * Get AI service status information
+   * @returns {Object} - AI service status
+   */
+  getAIStatus() {
+    return {
+      enabled: this.aiService.enabled,
+      available: this.aiService.isAvailable(),
+      model: this.aiService.getModel(),
+      apiKeyConfigured: this.aiService.apiKey.length > 0
+    };
   }
 }
 
