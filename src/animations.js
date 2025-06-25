@@ -239,6 +239,180 @@ class Animations {
       }, speed);
     });
   }
+  
+  /**
+   * Show animated code generation progress
+   * @param {string} instruction - The instruction being processed
+   * @param {string} mode - Generation mode (generate, extend, implement)
+   * @returns {Object} - Animation controller with update and stop methods
+   */
+  showCodeGenerationAnimation(instruction, mode = 'generate') {
+    const animationContainer = blessed.box({
+      top: 'center',
+      left: 'center',
+      width: '90%',
+      height: '70%',
+      content: '',
+      tags: true,
+      border: {
+        type: 'line',
+        fg: 'cyan'
+      },
+      style: {
+        fg: 'white',
+        bg: 'black',
+      },
+      padding: {
+        top: 1,
+        bottom: 1,
+        left: 2,
+        right: 2
+      }
+    });
+
+    this.screen.append(animationContainer);
+
+    // Animation state
+    let frame = 0;
+    let dots = '';
+    let codeLines = [];
+    let isComplete = false;
+    
+    const modeEmojis = {
+      generate: '✨',
+      extend: '🔧',
+      implement: '⚡'
+    };
+    
+    const modeColors = {
+      generate: 'cyan',
+      extend: 'yellow',
+      implement: 'green'
+    };
+
+    // Animation frames
+    const animationInterval = setInterval(() => {
+      if (isComplete) return;
+      
+      frame++;
+      dots = '.'.repeat((frame % 4));
+      
+      // Create animated header
+      const emoji = modeEmojis[mode] || '🤖';
+      const color = modeColors[mode] || 'cyan';
+      
+      let content = `{center}{${color}-fg}{bold}${emoji} AI Code Generation ${emoji}{/bold}{/${color}-fg}{/center}\n\n`;
+      content += `{center}Mode: {${color}-fg}${mode.toUpperCase()}{/${color}-fg}{/center}\n`;
+      content += `{center}Instruction: {white-fg}"${instruction}"{/white-fg}{/center}\n\n`;
+      
+      // Animated thinking indicator
+      const thinkingFrames = ['🧠💭', '🤖💡', '⚡🔥', '✨💫'];
+      const thinkingFrame = thinkingFrames[frame % thinkingFrames.length];
+      content += `{center}{${color}-fg}${thinkingFrame} Analyzing requirements${dots}{/${color}-fg}{/center}\n`;
+      
+      // Progress indicator
+      const progressBar = '█'.repeat(Math.floor((frame % 20) / 2)) + '░'.repeat(10 - Math.floor((frame % 20) / 2));
+      content += `{center}[${progressBar}]{/center}\n\n`;
+      
+      // Simulated code being written
+      const codeFrames = [
+        'function',
+        'function analyze(',
+        'function analyze(data) {',
+        'function analyze(data) {\n  const result = ',
+        'function analyze(data) {\n  const result = processData(',
+        'function analyze(data) {\n  const result = processData(data);',
+        'function analyze(data) {\n  const result = processData(data);\n  return result;',
+        'function analyze(data) {\n  const result = processData(data);\n  return result;\n}'
+      ];
+      
+      if (frame < 50) {
+        const codeIndex = Math.min(Math.floor(frame / 7), codeFrames.length - 1);
+        content += `{center}{dim}Preview:{/dim}{/center}\n`;
+        content += `{${color}-fg}${codeFrames[codeIndex]}{/${color}-fg}\n`;
+      }
+      
+      // Status messages
+      const statusMessages = [
+        'Connecting to AI service...',
+        'Processing natural language...',
+        'Analyzing code context...',
+        'Generating implementation...',
+        'Optimizing code structure...',
+        'Adding error handling...',
+        'Finalizing code...'
+      ];
+      
+      const statusIndex = Math.floor(frame / 10) % statusMessages.length;
+      content += `\n{center}{dim}${statusMessages[statusIndex]}{/dim}{/center}`;
+
+      animationContainer.setContent(content);
+      this.screen.render();
+    }, 150);
+
+    // Animation controller
+    const controller = {
+      update: (progressText) => {
+        // Update with custom progress text if needed
+        if (progressText) {
+          let content = `{center}{cyan-fg}{bold}✨ AI Code Generation ✨{/bold}{/cyan-fg}{/center}\n\n`;
+          content += `{center}${progressText}{/center}\n`;
+          animationContainer.setContent(content);
+          this.screen.render();
+        }
+      },
+      
+      success: (generatedLines, timeMs) => {
+        isComplete = true;
+        clearInterval(animationInterval);
+        
+        const emoji = modeEmojis[mode] || '🤖';
+        const color = modeColors[mode] || 'cyan';
+        
+        let content = `{center}{${color}-fg}{bold}${emoji} Code Generation Complete! ${emoji}{/bold}{/${color}-fg}{/center}\n\n`;
+        content += `{center}{green-fg}✅ Successfully ${mode}d code{/green-fg}{/center}\n`;
+        content += `{center}Generated: {yellow-fg}${generatedLines} lines{/yellow-fg}{/center}\n`;
+        content += `{center}Time: {yellow-fg}${timeMs}ms{/yellow-fg}{/center}\n\n`;
+        content += `{center}{dim}Press any key to continue...{/dim}{/center}`;
+        
+        animationContainer.setContent(content);
+        this.screen.render();
+        
+        // Auto-hide after 2 seconds
+        setTimeout(() => {
+          this.screen.remove(animationContainer);
+          this.screen.render();
+        }, 2000);
+      },
+      
+      error: (errorMessage) => {
+        isComplete = true;
+        clearInterval(animationInterval);
+        
+        let content = `{center}{red-fg}{bold}❌ Code Generation Failed ❌{/bold}{/red-fg}{/center}\n\n`;
+        content += `{center}{red-fg}Error: ${errorMessage}{/red-fg}{/center}\n\n`;
+        content += `{center}{dim}Press any key to continue...{/dim}{/center}`;
+        
+        animationContainer.setContent(content);
+        this.screen.render();
+        
+        // Auto-hide after 3 seconds
+        setTimeout(() => {
+          this.screen.remove(animationContainer);
+          this.screen.render();
+        }, 3000);
+      },
+      
+      stop: () => {
+        isComplete = true;
+        clearInterval(animationInterval);
+        this.screen.remove(animationContainer);
+        this.screen.render();
+      }
+    };
+
+    return controller;
+  }
 }
 
 module.exports = Animations;

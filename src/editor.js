@@ -131,7 +131,7 @@ class Editor {
       } else if (this.modeManager.isInsertMode()) {
         await this.handleInsertModeKeys(ch, key);
       } else if (this.modeManager.isCommandMode()) {
-        this.handleCommandModeKeys(ch, key);
+        await this.handleCommandModeKeys(ch, key);
       }
       
       // Update UI
@@ -259,7 +259,7 @@ class Editor {
    * @param {string} ch - Character
    * @param {object} key - Key info
    */
-  handleCommandModeKeys(ch, key) {
+  async handleCommandModeKeys(ch, key) {
     // Clear AI preview when in command mode
     this.clearAIPreview();
     
@@ -269,9 +269,14 @@ class Editor {
         break;
       case 'return':
         const command = this.modeManager.executeCommand();
-        const result = this.commandParser.parseCommand(command);
-        if (!result) {
-          this.showMessage(`Unknown command: ${command}`);
+        try {
+          const result = await this.commandParser.parseCommand(command);
+          if (!result) {
+            this.showMessage(`Unknown command: ${command}`);
+          }
+        } catch (error) {
+          console.error('Command execution error:', error);
+          this.showMessage(`Command error: ${error.message}`, 3000, 'error');
         }
         break;
       case 'backspace':
@@ -825,18 +830,51 @@ class Editor {
       return line;
     }
     
+    // Double-sanitize the suggestion before rendering
+    const cleanSuggestion = this.sanitizeForDisplay(suggestion);
+    if (!cleanSuggestion) {
+      return line;
+    }
+    
     // Ensure we're working with plain text
     const plainLine = this.stripAnsiCodes(line);
     const beforeCursor = plainLine.substring(0, cursorCol);
     const afterCursor = plainLine.substring(cursorCol);
     
     // Create ghost text with clear visual distinction
-    // Use dim gray text with subtle background that's clearly distinguishable
-    const ghostText = chalk.gray.dim(suggestion);
-    // Alternative: Use inverse colors for even better visibility
-    // const ghostText = chalk.inverse.gray(suggestion);
+    // Use dim gray text that's clearly distinguishable but not distracting
+    const ghostText = chalk.gray.dim(cleanSuggestion);
     
     return beforeCursor + ghostText + afterCursor;
+  }
+
+  /**
+   * Additional sanitization for display rendering
+   */
+  sanitizeForDisplay(text) {
+    if (!text || typeof text !== 'string') return '';
+    
+    // Remove any remaining problematic characters that could break terminal rendering
+    let cleaned = text;
+    
+    // Remove any remaining ANSI sequences that might have been missed
+    cleaned = cleaned.replace(/\x1b\[[0-9;]*[a-zA-Z]/g, '');
+    cleaned = cleaned.replace(/\x1b\[[0-9;]*m/g, '');
+    
+    // Remove any remaining HTML-like tags
+    cleaned = cleaned.replace(/<[^>]*>/g, '');
+    
+    // Remove any remaining markdown
+    cleaned = cleaned.replace(/```[\s\S]*?```/g, '');
+    cleaned = cleaned.replace(/`([^`]*)`/g, '$1');
+    
+    // Ensure only safe characters for terminal display
+    cleaned = cleaned.replace(/[^\x20-\x7E\t\n]/g, '');
+    
+    // Trim and validate
+    cleaned = cleaned.trim();
+    
+    return cleaned;
   }
 
   /**
@@ -904,6 +942,169 @@ class Editor {
     cleaned = cleaned.replace(/[^\x20-\x7E\t\n\r]/g, '');
     
     return cleaned.trim();
+  }
+
+  /**
+   * Generate code from natural language instruction
+   * @param {string} instruction - Natural language instruction
+   * @param {string} mode - Generation mode (generate, extend, implement)
+   * @returns {boolean} - Success status
+   */
+  async generateCodeFromInstruction(instruction, mode = 'generate') {
+    if (!this.aiService.isAvailable()) {
+      this.showMessage('[AI] Service not available - check API key', 3000, 'error');
+      return false;
+    }
+
+    // Start the beautiful animation
+    const animation = this.animations ? 
+      this.animations.showCodeGenerationAnimation(instruction, mode) : 
+      null;
+
+    try {
+      // Get current file content
+      const lines = this.buffer.getContent();
+      const existingCode = lines.join('\n');
+      
+      // Detect language from filename
+      const filename = this.buffer.getFilename();
+      const language = this.syntaxHighlighter.getLanguage(filename);
+      
+      // Record start time for animation
+      const startTime = Date.now();
+
+      // Generate code using AI service
+      const generatedCode = await this.aiService.generateCodeFromInstruction(
+        instruction, 
+        existingCode, 
+        language, 
+        mode
+      );
+
+      const endTime = Date.now();
+      const generationTime = endTime - startTime;
+
+      if (generatedCode && generatedCode.trim().length > 0) {
+        // Handle different modes
+        if (mode === 'generate' && existingCode.trim().length === 0) {
+          // For empty files, replace everything
+          this.replaceFileContent(generatedCode);
+        } else if (mode === 'extend' || mode === 'implement') {
+          // For extend/implement, replace the entire content with the enhanced version
+          this.replaceFileContent(generatedCode);
+        } else {
+          // For generate mode with existing content, append the new code
+          this.appendGeneratedCode(generatedCode);
+        }
+
+        // Show success animation
+        const lineCount = generatedCode.split('\n').length;
+        if (animation) {
+          animation.success(lineCount, generationTime);
+        }
+        
+        // Show success message with preview
+        this.showMessage(`[AI] Generated ${lineCount} lines successfully`, 3000, 'success');
+        
+        // Force render to show the new code
+        this.render();
+        
+        return true;
+      } else {
+        // Show error animation
+        if (animation) {
+          animation.error('No code generated - try a more specific instruction');
+        }
+        this.showMessage('[AI] No code generated - try a more specific instruction', 3000, 'warning');
+        return false;
+      }
+
+    } catch (error) {
+      console.error('Code generation error:', error);
+      
+      let errorMessage = 'Generation failed';
+      
+      if (error.message.includes('timeout')) {
+        errorMessage = 'Request timeout - try again';
+      } else if (error.message.includes('Authentication')) {
+        errorMessage = 'Check API key configuration';
+      } else if (error.message.includes('Rate limit')) {
+        errorMessage = 'Rate limit exceeded - wait a moment';
+      } else if (error.message.includes('Network error')) {
+        errorMessage = 'Network error - check connection';
+      }
+      
+      // Show error animation
+      if (animation) {
+        animation.error(errorMessage);
+      }
+      
+      this.showMessage(`[AI] ${errorMessage}`, 3000, 'error');
+      return false;
+    }
+  }
+
+  /**
+   * Replace entire file content with generated code
+   * @param {string} newContent - New content to replace with
+   */
+  replaceFileContent(newContent) {
+    // Clear current content
+    this.buffer.clear();
+    
+    // Insert new content line by line
+    const lines = newContent.split('\n');
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      
+      // Insert each character of the line
+      for (const char of line) {
+        this.buffer.insertCharacter(char);
+      }
+      
+      // Add newline except for the last line if it's empty
+      if (i < lines.length - 1) {
+        this.buffer.insertNewLine();
+      }
+    }
+    
+    // Reset cursor to beginning
+    this.buffer.cursor = { row: 0, col: 0 };
+  }
+
+  /**
+   * Append generated code to the end of the file
+   * @param {string} newCode - Code to append
+   */
+  appendGeneratedCode(newCode) {
+    // Move cursor to end of file
+    const lines = this.buffer.getContent();
+    this.buffer.cursor = { 
+      row: Math.max(0, lines.length - 1), 
+      col: lines[lines.length - 1]?.length || 0 
+    };
+    
+    // Add newlines if needed
+    if (lines.length > 0 && lines[lines.length - 1].trim() !== '') {
+      this.buffer.insertNewLine();
+      this.buffer.insertNewLine();
+    }
+    
+    // Insert the generated code
+    const codeLines = newCode.split('\n');
+    for (let i = 0; i < codeLines.length; i++) {
+      const line = codeLines[i];
+      
+      // Insert each character of the line
+      for (const char of line) {
+        this.buffer.insertCharacter(char);
+      }
+      
+      // Add newline except for the last line
+      if (i < codeLines.length - 1) {
+        this.buffer.insertNewLine();
+      }
+    }
   }
 }
 

@@ -53,23 +53,37 @@ console.log(chalk.white('3. Save the .env file'));
 
 console.log(chalk.blue('\n🚀 Usage:'));
 console.log(chalk.white('• Start editor: ') + chalk.cyan('node bin/vimjs.js filename.js'));
-console.log(chalk.white('• In Insert mode, press ') + chalk.yellow('Tab') + chalk.white(' for AI completion'));
-console.log(chalk.white('• Use ') + chalk.yellow(':toggleAI') + chalk.white(' to enable/disable AI'));
-console.log(chalk.white('• Use ') + chalk.yellow(':ai') + chalk.white(' to check AI status'));
+console.log(chalk.white('• In Insert mode, type code and pause 400ms for AI suggestions'));
+console.log(chalk.white('• Press ') + chalk.yellow('Tab') + chalk.white(' to accept AI suggestions (shown as gray ghost text)'));
+console.log(chalk.white('• Use ') + chalk.yellow(':ai') + chalk.white(' to toggle AI completion on/off'));
 console.log(chalk.white('• Use ') + chalk.yellow(':aimodel <model>') + chalk.white(' to change AI model'));
+console.log('');
+console.log(chalk.blue('🎯 AI Code Generation:'));
+console.log(chalk.white('• ') + chalk.yellow(':generate <instruction>') + chalk.white(' - Generate new code from description'));
+console.log(chalk.white('• ') + chalk.yellow(':gen <instruction>') + chalk.white(' - Short form of generate'));
+console.log(chalk.white('• ') + chalk.yellow(':extend <instruction>') + chalk.white(' - Extend existing code with new functionality'));
+console.log(chalk.white('• ') + chalk.yellow(':implement <instruction>') + chalk.white(' - Implement a specific feature'));
+console.log('');
+console.log(chalk.cyan('Examples:'));
+console.log(chalk.gray('  :gen create a function to calculate fibonacci numbers'));
+console.log(chalk.gray('  :extend add error handling and input validation'));
+console.log(chalk.gray('  :implement user authentication with JWT tokens'));
 
 console.log(chalk.blue('\n🤖 Available AI Models:'));
-console.log(chalk.white('• ') + chalk.cyan('mixtral-8x7b-32768') + chalk.gray(' (default - best for code)'));
-console.log(chalk.white('• ') + chalk.cyan('llama3-8b-8192') + chalk.gray(' (fast and efficient)'));
-console.log(chalk.white('• ') + chalk.cyan('llama3-70b-8192') + chalk.gray(' (most capable)'));
-console.log(chalk.white('• ') + chalk.cyan('gemma-7b-it') + chalk.gray(' (balanced)'));
+console.log(chalk.white('• ') + chalk.cyan('llama3-8b-8192') + chalk.gray(' (default - fast and reliable)'));
+console.log(chalk.white('• ') + chalk.cyan('llama3-70b-8192') + chalk.gray(' (more capable, slower)'));
+console.log(chalk.white('• ') + chalk.cyan('llama-3.1-8b-instant') + chalk.gray(' (instant responses)'));
+console.log(chalk.white('• ') + chalk.cyan('gemma2-9b-it') + chalk.gray(' (good for code completion)'));
 
 console.log(chalk.blue('\n📝 Test the AI features:'));
-console.log(chalk.white('Run: ') + chalk.cyan('node bin/vimjs.js test-ai.js'));
+console.log(chalk.white('Run: ') + chalk.cyan('node test-ai-completion.js') + chalk.gray(' (test API connectivity)'));
+console.log(chalk.white('Run: ') + chalk.cyan('node bin/vimjs.js test-file.js') + chalk.gray(' (test in editor)'));
 
 console.log(chalk.blue('\n🔧 Troubleshooting:'));
-console.log(chalk.white('• If you see ') + chalk.red('[AI] Service not configured') + chalk.white(', check your API key'));
-console.log(chalk.white('• If you see ') + chalk.red('[AI] Rate limit exceeded') + chalk.white(', wait a moment and try again'));
-console.log(chalk.white('• If you see ') + chalk.red('[AI] Request timeout') + chalk.white(', your internet connection may be slow'));
+console.log(chalk.white('• If AI suggestions contain formatting/colors: ') + chalk.yellow('Fixed in latest version!'));
+console.log(chalk.white('• If you see ') + chalk.red('[AI] Service not configured') + chalk.white(': check your API key'));
+console.log(chalk.white('• If you see ') + chalk.red('[AI] Rate limit exceeded') + chalk.white(': wait a moment and try again'));
+console.log(chalk.white('• If you see ') + chalk.red('[AI] Request timeout') + chalk.white(': check your internet connection'));
+console.log(chalk.white('• Status bar shows ') + chalk.green('[AI: enabled]') + chalk.white(' when working correctly'));
 
 console.log('');

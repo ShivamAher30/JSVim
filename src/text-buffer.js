@@ -217,6 +217,15 @@ class TextBuffer {
   }
 
   /**
+   * Clear all content from the buffer
+   */
+  clear() {
+    this.content = [''];
+    this.cursor = { row: 0, col: 0 };
+    this.modified = true;
+  }
+
+  /**
    * Check if buffer has unsaved changes
    * @returns {boolean}
    */

@@ -22,6 +22,10 @@ class CommandParser {
       'toggleAI': this.toggleAI.bind(this),
       'ai': this.showAIStatus.bind(this),
       'aimodel': this.changeAIModel.bind(this),
+      'generate': this.generateCode.bind(this),
+      'gen': this.generateCode.bind(this),
+      'extend': this.extendCode.bind(this),
+      'implement': this.implementFeature.bind(this),
     };
   }
 
@@ -30,7 +34,7 @@ class CommandParser {
    * @param {string} commandStr - Command string
    * @returns {boolean} - Command success status
    */
-  parseCommand(commandStr) {
+  async parseCommand(commandStr) {
     commandStr = commandStr.trim();
     
     // Extract command base (first word)
@@ -38,7 +42,7 @@ class CommandParser {
     
     // Check if the command exists
     if (this.commands[commandBase]) {
-      return this.commands[commandBase](commandStr);
+      return await this.commands[commandBase](commandStr);
     }
     
     // Handle set commands
@@ -168,10 +172,24 @@ class CommandParser {
       ':set syntax/nosyntax - Toggle syntax highlighting',
       ':cs <theme> - Change color scheme (dracula, neon, ocean, sunset)',
       ':themes - List all available themes',
+      ':ai - Toggle AI completion and show status',
+      ':aimodel <model> - Change AI model',
+      '',
+      'AI Code Generation:',
+      ':generate <instruction> - Generate new code from description',
+      ':gen <instruction> - Same as generate (short form)',
+      ':extend <instruction> - Extend existing code with new functionality',
+      ':implement <instruction> - Implement a specific feature',
+      '',
+      'Examples:',
+      ':gen create a function to calculate fibonacci numbers',
+      ':extend add error handling to this function',
+      ':implement user authentication with JWT tokens',
+      '',
       ':help/h - Show this help'
     ].join('\n');
     
-    this.editor.showMessage(help, 8000);
+    this.editor.showMessage(help, 10000);
     return true;
   }
 
@@ -232,7 +250,7 @@ class CommandParser {
   }
 
   /**
-   * Show/Toggle AI status
+   * Show/Toggle AI status with clear feedback
    * @returns {boolean}
    */
   showAIStatus() {
@@ -240,18 +258,23 @@ class CommandParser {
     const newState = this.editor.toggleAI();
     const status = this.editor.getAIStatus();
     
-    // Show detailed status message
-    let message = `[AI] Completion ${status.enabled ? 'enabled' : 'disabled'}`;
+    // Show clear toggle confirmation message
+    const statusText = status.enabled ? 'enabled' : 'disabled';
+    let message = `[AI] Completion ${statusText}`;
     
     if (status.enabled) {
-      message += ` | Model: ${status.model}`;
-      message += ` | API Key: ${status.apiKeyConfigured ? 'configured' : 'missing'}`;
       if (!status.available) {
-        message += ' | ⚠️ Not available (check API key)';
+        message += ' ⚠️ (API key missing or invalid)';
+      } else {
+        message += ` | Model: ${status.model}`;
       }
     }
     
     this.editor.showMessage(message, 3000);
+    
+    // Force a render to update status bar immediately
+    this.editor.render();
+    
     return true;
   }
 
@@ -281,6 +304,105 @@ class CommandParser {
     
     this.editor.showMessage(`AI model changed to: ${modelName}`);
     return true;
+  }
+
+  /**
+   * Generate code based on natural language instruction
+   * @param {string} commandStr - Command string with instruction
+   * @returns {boolean}
+   */
+  async generateCode(commandStr) {
+    const instruction = this.extractInstruction(commandStr, 'generate');
+    if (!instruction) {
+      this.editor.showMessage('Usage: :generate <instruction> or :gen <instruction>', 3000, 'warning');
+      return false;
+    }
+
+    return await this.handleCodeGeneration(instruction, 'generate');
+  }
+
+  /**
+   * Extend existing code based on natural language instruction
+   * @param {string} commandStr - Command string with instruction
+   * @returns {boolean}
+   */
+  async extendCode(commandStr) {
+    const instruction = this.extractInstruction(commandStr, 'extend');
+    if (!instruction) {
+      this.editor.showMessage('Usage: :extend <instruction>', 3000, 'warning');
+      return false;
+    }
+
+    return await this.handleCodeGeneration(instruction, 'extend');
+  }
+
+  /**
+   * Implement a feature based on natural language instruction
+   * @param {string} commandStr - Command string with instruction
+   * @returns {boolean}
+   */
+  async implementFeature(commandStr) {
+    const instruction = this.extractInstruction(commandStr, 'implement');
+    if (!instruction) {
+      this.editor.showMessage('Usage: :implement <instruction>', 3000, 'warning');
+      return false;
+    }
+
+    return await this.handleCodeGeneration(instruction, 'implement');
+  }
+
+  /**
+   * Extract instruction from command string
+   * @param {string} commandStr - Full command string
+   * @param {string} command - Command name to remove
+   * @returns {string|null} - Extracted instruction
+   */
+  extractInstruction(commandStr, command) {
+    const parts = commandStr.split(' ');
+    if (parts.length < 2) {
+      return null;
+    }
+
+    // Remove the command part and join the rest as instruction
+    parts.shift(); // Remove command
+    return parts.join(' ').trim();
+  }
+
+  /**
+   * Handle code generation based on instruction and mode
+   * @param {string} instruction - Natural language instruction
+   * @param {string} mode - Generation mode (generate, extend, implement)
+   * @returns {boolean}
+   */
+  async handleCodeGeneration(instruction, mode) {
+    try {
+      this.editor.showMessage(`[AI] Processing ${mode} request...`, 0, 'info');
+      
+      const result = await this.editor.generateCodeFromInstruction(instruction, mode);
+      
+      if (result) {
+        this.editor.showMessage(`[AI] Code ${mode}d successfully`, 2000, 'success');
+        return true;
+      } else {
+        this.editor.showMessage(`[AI] Failed to ${mode} code`, 3000, 'error');
+        return false;
+      }
+    } catch (error) {
+      console.error(`Code generation error (${mode}):`, error);
+      
+      let errorMessage = `[AI] ${mode} failed`;
+      
+      if (error.message.includes('timeout')) {
+        errorMessage += ' - request timeout';
+      } else if (error.message.includes('Authentication')) {
+        errorMessage += ' - check API key';
+      } else if (error.message.includes('Rate limit')) {
+        errorMessage += ' - rate limit exceeded';
+      }
+      
+      this.editor.showMessage(errorMessage, 3000, 'error');
+      return false;
+    }
   }
 }
 
