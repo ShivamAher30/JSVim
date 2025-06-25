@@ -232,20 +232,26 @@ class CommandParser {
   }
 
   /**
-   * Show AI status
+   * Show/Toggle AI status
    * @returns {boolean}
    */
   showAIStatus() {
+    // Toggle AI and get new status
+    const newState = this.editor.toggleAI();
     const status = this.editor.getAIStatus();
-    let message = `[AI] Status: ${status.enabled ? 'enabled' : 'disabled'}`;
+    
+    // Show detailed status message
+    let message = `[AI] Completion ${status.enabled ? 'enabled' : 'disabled'}`;
     
     if (status.enabled) {
       message += ` | Model: ${status.model}`;
       message += ` | API Key: ${status.apiKeyConfigured ? 'configured' : 'missing'}`;
-      message += ` | Available: ${status.available ? 'yes' : 'no'}`;
+      if (!status.available) {
+        message += ' | ⚠️ Not available (check API key)';
+      }
     }
     
-    this.editor.showMessage(message, 5000);
+    this.editor.showMessage(message, 3000);
     return true;
   }
 

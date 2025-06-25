@@ -225,11 +225,36 @@ class TextBuffer {
   }
 
   /**
-   * Get current cursor position
+   * Get current cursor position with validation
    * @returns {Object} - Cursor position {row, col}
    */
   getCursor() {
+    // Validate and correct cursor position
+    this.validateCursor();
     return { ...this.cursor };
+  }
+  
+  /**
+   * Validate and correct cursor position
+   */
+  validateCursor() {
+    const maxRow = Math.max(0, this.content.length - 1);
+    const currentLine = this.content[this.cursor.row] || '';
+    const maxCol = currentLine.length;
+    
+    // Correct row if out of bounds
+    if (this.cursor.row < 0) {
+      this.cursor.row = 0;
+    } else if (this.cursor.row > maxRow) {
+      this.cursor.row = maxRow;
+    }
+    
+    // Correct column if out of bounds
+    if (this.cursor.col < 0) {
+      this.cursor.col = 0;
+    } else if (this.cursor.col > maxCol) {
+      this.cursor.col = maxCol;
+    }
   }
 }
 

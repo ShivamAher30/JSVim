@@ -38,9 +38,18 @@ node bin/vimjs.js test-ai.js
 ## 🎯 How to Use AI Completion
 
 1. **Enter Insert Mode**: Press `i`
-2. **Position Cursor**: Navigate to where you want code completion
-3. **Trigger AI**: Press `Tab` to get AI suggestions
-4. **Continue Coding**: The AI suggestion will be inserted at your cursor
+2. **Start Typing**: AI suggestions will appear automatically as grayed-out text
+3. **Accept Suggestions**: Press `Tab` to accept the grayed-out suggestion
+4. **Dismiss Suggestions**: Continue typing to dismiss and get new suggestions
+5. **Manual Trigger**: Press `Tab` when no preview is visible to request suggestions
+6. **Continue Coding**: The suggestion integrates seamlessly with your workflow
+
+## ✨ New Features
+
+- **🔍 Live Preview**: See AI suggestions as grayed-out text while typing
+- **👁️ Blinking Cursor**: Improved cursor visibility in Insert mode
+- **📜 Smart Scrolling**: Cursor stays visible when navigating large files
+- **⚡ Auto-Suggestions**: Get suggestions automatically after a pause in typing
 
 ## 📝 Commands
 
@@ -53,17 +62,21 @@ node bin/vimjs.js test-ai.js
 
 ## 🤖 Available AI Models
 
-- **mixtral-8x7b-32768** (default) - Best for code completion
-- **llama3-8b-8192** - Fast and efficient
+- **llama3-8b-8192** (default) - Fast and efficient for code completion
 - **llama3-70b-8192** - Most capable but slower
+- **llama-3.1-8b-instant** - Latest Llama 3.1 model, very fast
+- **llama-3.1-70b-versatile** - Latest large model, most capable
 - **gemma-7b-it** - Good balance of speed and quality
+- **gemma2-9b-it** - Improved Gemma model
 
 ## 💡 Tips for Best Results
 
-1. **Provide Context**: AI works better with more code context
-2. **Use Comments**: Add comments describing what you want to implement
-3. **Follow Patterns**: AI learns from your existing code style
-4. **Be Patient**: Wait for the suggestion to load (usually 1-3 seconds)
+1. **Watch for Gray Text**: AI suggestions appear as grayed-out text after typing
+2. **Provide Context**: AI works better with more code context around your cursor
+3. **Use Descriptive Comments**: Add comments describing what you want to implement
+4. **Follow Patterns**: AI learns from your existing code style
+5. **Pause Briefly**: Allow 1 second after typing for auto-suggestions to appear
+6. **Tab to Accept**: Press Tab when you see grayed-out text you want to accept
 
 ## 🐛 Troubleshooting
 
@@ -80,18 +93,25 @@ node bin/vimjs.js test-ai.js
 ## 📚 Example Usage
 
 ```javascript
-// Type this and press Tab at the end
-function fibonacci(n) {
-    // Press Tab here
+// Start typing a function and pause...
+function calculateArea(radius) {
+    // You'll see grayed-out suggestion appear here
 ```
 
-The AI might suggest:
+After pausing, you might see:
 ```javascript
-function fibonacci(n) {
-    if (n <= 1) return n;
-    return fibonacci(n - 1) + fibonacci(n - 2);
-}
+function calculateArea(radius) {
+    return Math.PI * radius * radius; // ← This appears grayed-out
 ```
+
+**Press Tab to accept the suggestion!**
+
+## 🎨 Visual Cues
+
+- **Grayed-out text** = AI suggestion (press Tab to accept)
+- **Blinking cursor** = Insert mode is active
+- **`[AI: Tab to accept]`** = Status bar shows suggestion is ready
+- **Cursor follows you** = Auto-scrolling keeps cursor visible
 
 ## 🎨 Other VimJS Features
 

@@ -77,9 +77,12 @@ vimjs
 
 - `Esc` - Return to Normal mode
 - `Tab` - **AI code autocompletion** (when API key is configured)
+  - If AI preview is visible (grayed out text), Tab accepts the suggestion
+  - If no preview, Tab triggers new AI completion request
 - Arrow keys - Navigate through text
 - `Enter` - Insert new line
 - `Backspace` - Delete character before cursor
+- **AI Preview**: Suggestions appear as grayed-out text after typing. Press Tab to accept or continue typing to dismiss.
 
 ### Command Mode
 
@@ -96,7 +99,7 @@ vimjs
 - `:themes` - List all available themes
 - `:toggleAI` - Toggle AI autocompletion on/off
 - `:ai` - Show AI service status and configuration
-- `:aimodel <model>` - Change AI model (mixtral-8x7b-32768, llama3-8b-8192, etc.)
+- `:aimodel <model>` - Change AI model (llama3-8b-8192, llama3-70b-8192, etc.)
 
 ## Using Command Mode and Changing Themes
 
@@ -130,31 +133,44 @@ VimJS now includes intelligent code autocompletion powered by Groq's large langu
 
 ### Features
 
-- **Context-aware suggestions**: Analyzes up to 100 lines or 1000 characters before the cursor
+- **Context-aware suggestions**: Analyzes up to 50 lines or 800 characters before the cursor for optimal performance
+- **Intelligent preview mode**: Shows suggestions as faded gray ghost text inline before accepting
 - **Multi-language support**: Works with any programming language
 - **Smart caching**: Caches recent completions for faster responses
-- **Multiple models**: Support for Mixtral, LLaMA3, and other Groq models
+- **Multiple models**: Support for LLaMA3 and other Groq models
 - **Graceful error handling**: Handles rate limits, timeouts, and network issues
+- **Debounced requests**: 300ms delay prevents excessive API calls while maintaining responsiveness
+- **Enhanced cursor feedback**: 
+  - Insert mode: Blinking vertical bar (|) cursor
+  - Normal mode: Steady block (█) cursor
+  - Visual synchronization between cursor and buffer content
+- **Auto-scroll**: Cursor remains visible when scrolling through files
 
 ### Usage
 
 1. **Setup**: Configure your Groq API key in the `.env` file
-2. **Autocompletion**: In Insert mode, press `Tab` to get AI suggestions
-3. **Toggle**: Use `:toggleAI` to enable/disable the feature
-4. **Status**: Use `:ai` to check configuration and status
-5. **Models**: Use `:aimodel <model-name>` to switch between models
+2. **Ghost Text Autocompletion**: In Insert mode, AI suggestions appear automatically as clearly visible dim gray text after a 300ms typing pause
+3. **Accept Suggestions**: Press `Tab` to accept grayed-out AI suggestions  
+4. **Continue Typing**: Keep typing to dismiss current suggestion and trigger new ones
+5. **Manual Trigger**: Press `Tab` when no preview is visible to request new suggestions
+6. **Toggle**: Use `:toggleAI` to enable/disable the feature
+7. **Status**: Use `:ai` to check configuration and status
+8. **Models**: Use `:aimodel <model-name>` to switch between models
 
 ### Supported Models
 
-- `mixtral-8x7b-32768` (default) - Excellent for code completion
-- `llama3-8b-8192` - Fast and efficient
+- `llama3-8b-8192` (default) - Fast and efficient for code completion
 - `llama3-70b-8192` - Most capable but slower
+- `llama-3.1-8b-instant` - Latest Llama 3.1 model, very fast
+- `llama-3.1-70b-versatile` - Latest large model, most capable
 - `gemma-7b-it` - Good balance of speed and quality
+- `gemma2-9b-it` - Improved Gemma model
 
 ### Status Messages
 
+- `[AI] Suggestion ready (Tab to accept, type to dismiss)` - Preview suggestion available
+- `[AI] Suggestion applied` - Completion successfully inserted  
 - `[AI] Fetching suggestion...` - Request in progress
-- `[AI] Suggestion applied` - Completion successfully inserted
 - `[AI] Failed to fetch completion` - Generic error
 - `[AI] Request timeout` - API timeout (try again)
 - `[AI] Rate limit exceeded` - Too many requests
@@ -162,11 +178,34 @@ VimJS now includes intelligent code autocompletion powered by Groq's large langu
 
 ## Recent Improvements
 
-- **🤖 AI-Powered Autocompletion**: Added intelligent code completion using Groq's LLM API with support for multiple models (Mixtral, LLaMA3)
+- **� Fixed Character Rendering Issues**: 
+  - Resolved problems with HTML tags, ANSI color codes, and special Unicode characters appearing in AI suggestions
+  - Implemented comprehensive suggestion sanitization to ensure plain text only
+  - Fixed ghost text visibility conflicts with syntax highlighting
+- **�🔄 Enhanced Cursor Management**: Fixed cursor placement issues and improved synchronization between cursor position and buffer content
+- **👁️ Mode-Specific Cursor Styling**: 
+  - Insert mode: Blinking vertical bar cursor (|) for clear input indication
+  - Normal mode: Steady block cursor (█) for navigation feedback
+  - Command mode: Hidden cursor during command entry
+- **🤖 Intelligent AI Autocompletion**: 
+  - **Fixed Ghost Text Visibility**: AI suggestions now appear as clearly visible dim gray text
+  - **Improved Rendering Pipeline**: Ghost text is inserted before syntax highlighting to prevent conflicts
+  - **Debounced Requests**: 300ms delay prevents excessive API calls while maintaining responsiveness
+  - **Smart Context**: Improved context analysis for more relevant suggestions
+  - **Enhanced Cleanup**: Better suggestion formatting with comprehensive sanitization
+  - **Automatic Triggers**: Suggestions appear naturally as you type with proper dismissal on ESC/cursor movement
+- **⚡ Performance Optimizations**:
+  - Faster AI response times with reduced timeouts (8s vs 15s)
+  - Optimized context window (800 chars vs 1000 chars)
+  - Improved caching and suggestion relevance
+- **🎯 Better UX**:
+  - Immediate preview clearing when typing continues
+  - More intuitive Tab acceptance behavior
+  - Enhanced status messages and visual feedback
+  - Seamless typing flow without interference
 - **Enhanced Character Display**: Fixed issues with special characters like quotes (`"`) and other symbols to ensure they display correctly
 - **Improved File Saving**: Added more reliable file saving functionality, ensuring directories exist before saving
 - **Theme Cycling Shortcut**: Added `Ctrl+t` shortcut to quickly cycle through available themes
-- **Proper HTML Entity Decoding**: Characters are now properly decoded for display in the editor
 
 ## Syntax Highlighting
 

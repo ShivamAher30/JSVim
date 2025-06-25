@@ -63,7 +63,7 @@ class StatusLine {
    * @param {object} data - Status data
    */
   update(data) {
-    const { mode, filename, modified, cursor, commandBuffer, language, lineCount } = data;
+    const { mode, filename, modified, cursor, commandBuffer, language, lineCount, aiPreview, aiEnabled } = data;
     
     // If in command mode, show the command buffer with proper formatting
     if (mode === 'command') {
@@ -98,8 +98,25 @@ class StatusLine {
     // Show line count
     const lineCountDisplay = lineCount ? `Lines: ${lineCount}` : '';
     
-    // Format the status line
-    const statusLine = `${modeDisplay} ${langDisplay} | ${fileDisplay} | ${positionDisplay} | ${lineCountDisplay}`;
+    // Add AI status indicator
+    const aiStatusDisplay = aiEnabled !== undefined ? 
+      (aiEnabled ? chalk.green('[AI: enabled]') : chalk.gray('[AI: disabled]')) : '';
+    
+    // Add AI preview indicator
+    const aiPreviewDisplay = aiPreview ? chalk.magenta('[Tab to accept]') : '';
+    
+    // Format the status line with better spacing
+    const statusParts = [
+      modeDisplay,
+      langDisplay,
+      fileDisplay,
+      positionDisplay,
+      lineCountDisplay,
+      aiStatusDisplay,
+      aiPreviewDisplay
+    ].filter(part => part); // Remove empty parts
+    
+    const statusLine = statusParts.join(' | ');
     
     // Update the status box
     this.statusBox.setContent(statusLine);
@@ -145,6 +162,20 @@ class StatusLine {
       this.screen.render();
     }, duration);
     
+    this.screen.render();
+  }
+
+  /**
+   * Clear temporary message immediately
+   */
+  clearMessage() {
+    if (this.messageTimeout) {
+      clearTimeout(this.messageTimeout);
+      this.messageTimeout = null;
+    }
+    
+    this.message = '';
+    this.messageBox.hide();
     this.screen.render();
   }
 }
