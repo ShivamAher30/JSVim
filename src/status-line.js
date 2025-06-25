@@ -69,14 +69,13 @@ class StatusLine {
     if (mode === 'command') {
       // Make command text bold with high contrast colors for maximum visibility
       this.statusBox.style.bg = 'black';
-      this.statusBox.style.fg = 'yellow';
+      this.statusBox.style.fg = 'white';
       this.statusBox.style.bold = true;
       
-      // Ensure full width of command is visible by padding
-      const padding = ' '.repeat(Math.max(0, this.statusBox.width - commandBuffer.length - 5));
+      // Create the command display with clear visual indicators
+      const commandText = commandBuffer || ':';
+      const displayText = `{yellow-fg}{bold}${commandText}{/bold}{/yellow-fg}`;
       
-      // Add a visual indicator to make the command more noticeable
-      const displayText = chalk.bold.yellow('→ ' + commandBuffer) + padding;
       this.statusBox.setContent(displayText);
       
       // Force screen render to ensure visibility

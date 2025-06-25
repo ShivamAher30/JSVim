@@ -134,6 +134,12 @@ class Editor {
    * @param {object} key - Key info
    */
   handleNormalModeKeys(ch, key) {
+    // Handle colon character for command mode
+    if (ch === ':') {
+      this.modeManager.setCommandMode();
+      return;
+    }
+    
     switch (key.name) {
       case 'i':
         this.modeManager.setInsertMode();
@@ -220,7 +226,6 @@ class Editor {
     switch (key.name) {
       case 'escape':
         this.modeManager.setNormalMode();
-        this.render();
         break;
       case 'return':
         const command = this.modeManager.executeCommand();
@@ -228,16 +233,13 @@ class Editor {
         if (!result) {
           this.showMessage(`Unknown command: ${command}`);
         }
-        this.render();
         break;
       case 'backspace':
         this.modeManager.removeFromCommandBuffer();
-        this.render(); // Force render to update command visibility
         break;
       default:
-        if (ch && !key.ctrl && !key.meta) {
+        if (ch && !key.ctrl && !key.meta && key.name !== 'tab') {
           this.modeManager.addToCommandBuffer(ch);
-          this.render(); // Force render to update command visibility
         }
     }
   }
