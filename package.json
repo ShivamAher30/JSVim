@@ -1,0 +1,35 @@
+{
+  "name": "vimjs",
+  "version": "1.0.0",
+  "description": "A Vim-inspired terminal-based text editor written in JavaScript",
+  "main": "src/index.js",
+  "bin": {
+    "vimjs": "./bin/vimjs.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node bin/vimjs.js"
+  },
+  "keywords": [
+    "vim",
+    "text-editor",
+    "terminal",
+    "cli",
+    "editor"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "blessed": "^0.1.81",
+    "cardinal": "^2.1.1",
+    "chalk": "^4.1.2",
+    "chalk-animation": "^2.0.3",
+    "figlet": "^1.8.1",
+    "fs-extra": "^11.1.1",
+    "gradient-string": "^3.0.0",
+    "highlight.js": "^11.11.1",
+    "nanospinner": "^1.2.2",
+    "ora": "^8.2.0",
+    "yargs": "^17.7.2"
+  }
+}
