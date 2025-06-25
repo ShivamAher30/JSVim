@@ -3,7 +3,7 @@ const StatusLine = require('./status-line');
 const TextBuffer = require('./text-buffer');
 const ModeManager = require('./mode-manager');
 const CommandParser = require('./command-parser');
-const SyntaxHighlighter = require('./syntax-highlighter');
+const SyntaxHighlighter = require('./enhanced-syntax-highlighter');
 const Animations = require('./animations');
 
 module.exports = {

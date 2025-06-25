@@ -24,6 +24,10 @@ class StatusLine {
       right: 0,
       height: height,
       tags: true,
+      padding: {
+        left: 1,
+        right: 1
+      },
       style: {
         fg: 'white',
         bg: 'blue',
@@ -61,12 +65,28 @@ class StatusLine {
   update(data) {
     const { mode, filename, modified, cursor, commandBuffer, language, lineCount } = data;
     
-    // If in command mode, show the command buffer
+    // If in command mode, show the command buffer with proper formatting
     if (mode === 'command') {
-      this.statusBox.setContent(commandBuffer);
+      // Make command text bold with high contrast colors for maximum visibility
+      this.statusBox.style.bg = 'black';
+      this.statusBox.style.fg = 'yellow';
+      this.statusBox.style.bold = true;
+      
+      // Ensure full width of command is visible by padding
+      const padding = ' '.repeat(Math.max(0, this.statusBox.width - commandBuffer.length - 5));
+      
+      // Add a visual indicator to make the command more noticeable
+      const displayText = chalk.bold.yellow('→ ' + commandBuffer) + padding;
+      this.statusBox.setContent(displayText);
+      
+      // Force screen render to ensure visibility
       this.screen.render();
       return;
     }
+    
+    // Reset style for other modes
+    this.statusBox.style.bg = 'blue';
+    this.statusBox.style.fg = 'white';
     
     // Build status line content
     const modeDisplay = this.getModeDisplay(mode);

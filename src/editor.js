@@ -4,7 +4,7 @@ const TextBuffer = require('./text-buffer');
 const ModeManager = require('./mode-manager');
 const CommandParser = require('./command-parser');
 const StatusLine = require('./status-line');
-const SyntaxHighlighter = require('./syntax-highlighter');
+const SyntaxHighlighter = require('./enhanced-syntax-highlighter');
 const Animations = require('./animations');
 
 /**
@@ -214,6 +214,7 @@ class Editor {
     switch (key.name) {
       case 'escape':
         this.modeManager.setNormalMode();
+        this.render();
         break;
       case 'return':
         const command = this.modeManager.executeCommand();
@@ -221,13 +222,16 @@ class Editor {
         if (!result) {
           this.showMessage(`Unknown command: ${command}`);
         }
+        this.render();
         break;
       case 'backspace':
         this.modeManager.removeFromCommandBuffer();
+        this.render(); // Force render to update command visibility
         break;
       default:
         if (ch && !key.ctrl && !key.meta) {
           this.modeManager.addToCommandBuffer(ch);
+          this.render(); // Force render to update command visibility
         }
     }
   }

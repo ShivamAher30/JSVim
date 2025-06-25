@@ -34,6 +34,7 @@ class ModeManager {
   setCommandMode() {
     this.currentMode = this.MODES.COMMAND;
     this.commandBuffer = ':';
+    // Force refresh to ensure command visibility
   }
 
   /**
@@ -71,18 +72,22 @@ class ModeManager {
   /**
    * Add character to command buffer
    * @param {string} char - Character to add
+   * @returns {string} - Updated command buffer
    */
   addToCommandBuffer(char) {
     this.commandBuffer += char;
+    return this.commandBuffer; // Return for immediate use if needed
   }
 
   /**
    * Remove last character from command buffer
+   * @returns {string} - Updated command buffer
    */
   removeFromCommandBuffer() {
     if (this.commandBuffer.length > 1) { // Preserve the initial ':'
       this.commandBuffer = this.commandBuffer.slice(0, -1);
     }
+    return this.commandBuffer; // Return for immediate use if needed
   }
 
   /**

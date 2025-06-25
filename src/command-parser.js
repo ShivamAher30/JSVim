@@ -205,9 +205,16 @@ class CommandParser {
     const success = this.editor.setTheme(themeName);
     
     if (!success) {
-      this.editor.showMessage(`Unknown theme: ${themeName}`);
+      const themes = this.editor.getThemes();
+      this.editor.showMessage(`Unknown theme: '${themeName}'. Available themes: ${themes.join(', ')}`, 5000);
       return false;
     }
+    
+    // Show a message confirming the change
+    this.editor.showMessage(`Theme changed to: ${themeName}`);
+    
+    // Force a full render to apply the theme
+    this.editor.render();
     
     return true;
   }

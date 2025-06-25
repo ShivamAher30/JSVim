@@ -8,7 +8,9 @@ A Vim-inspired terminal-based text editor written in JavaScript
 - Command mode for executing commands (`:w`, `:q`, `:wq`, `:q!`)
 - Relative and absolute line numbers
 - Colorful status line with file info, cursor position, and language detection
-- Enhanced syntax highlighting with multiple color themes (Dracula, Neon, Ocean, Sunset)
+- Comprehensive syntax highlighting with support for 30+ languages
+- Multiple beautiful color themes (Dracula, Nord, Tokyo Night, One Dark, Solarized)
+- Intelligent language detection based on file extension and content
 - Eye-catching animations for file opening and operations
 - Visual notifications and loading indicators
 - File navigation using Vim-like keys (h/j/k/l) or arrow keys
@@ -72,8 +74,98 @@ vimjs
 - `:set syntax` / `:set nosyntax` - Enable/disable syntax highlighting
 - `:help` or `:h` - Show help information
 - `:set` - Show current settings
-- `:cs <theme>` - Change color scheme (dracula, neon, ocean, sunset)
+- `:cs <theme>` or `:colorscheme <theme>` - Change color scheme (dracula, nord, tokyo-night, one-dark, solarized)
 - `:themes` - List all available themes
+
+## Using Command Mode and Changing Themes
+
+### Entering Command Mode
+
+1. Make sure you're in Normal mode (press `Esc` if you're not sure)
+2. Press the colon key (`:`) to enter Command mode
+3. Type your command (you should see it displayed in the status bar at the bottom)
+4. Press `Enter` to execute the command
+5. Press `Esc` at any time to cancel and return to Normal mode
+
+### Changing Editor Theme
+
+VimJS supports multiple beautiful themes that enhance syntax highlighting:
+
+1. In Normal mode, press `:` to enter Command mode
+2. Type `cs theme-name` or `colorscheme theme-name` (e.g., `:cs nord`)
+3. Press `Enter` to apply the theme
+
+Available themes:
+- `dracula` - Default theme with vibrant colors
+- `nord` - Cool blue-based color scheme
+- `tokyo-night` - Dark theme inspired by Tokyo at night
+- `one-dark` - Atom-inspired dark theme
+- `solarized` - Classic solarized dark theme
+
+To list all available themes:
+1. Enter Command mode with `:`
+2. Type `themes`
+3. Press `Enter`
+
+### Troubleshooting Command Mode
+
+If you can't see what you're typing in Command mode:
+- Check that the status bar at the bottom of the screen is visible
+- Press `Esc` and try entering Command mode again with `:`
+- If text is still not visible, try resizing your terminal window
+
+## Syntax Highlighting
+
+VimJS supports comprehensive syntax highlighting for 30+ programming languages, including:
+
+- JavaScript/TypeScript/JSX/TSX
+- Python
+- C/C++
+- Java
+- HTML/CSS/SCSS/LESS
+- Ruby
+- Go
+- Rust
+- PHP
+- Shell scripts (Bash, Zsh)
+- Markdown
+- JSON/YAML/TOML
+- SQL
+- and many more!
+
+### Language Detection
+
+VimJS automatically detects languages based on:
+
+1. File extension (`.js`, `.py`, `.cpp`, etc.)
+2. File content (shebang lines, language-specific patterns)
+3. Filenames (like `Dockerfile`, `.bashrc`)
+
+### Color Themes
+
+Available color themes:
+
+- `dracula` - Dark theme with vibrant colors (default)
+- `nord` - Cool blue-based color scheme
+- `tokyo-night` - Dark theme inspired by Tokyo at night
+- `one-dark` - Atom-inspired dark theme
+- `solarized` - Classic solarized dark theme
+
+Change the theme with:
+
+```
+:cs theme-name
+```
+
+or
+
+```
+:colorscheme theme-name
+```
+
+### Performance Optimizations
+
+For large files, VimJS uses optimized highlighting to maintain editor responsiveness.
 
 ## Dependencies
 
