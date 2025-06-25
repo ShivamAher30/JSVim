@@ -49,17 +49,19 @@ vimjs
 
 ### Normal Mode
 
-- `i` - Enter insert mode
-- `:` - Enter command mode
-- `h` - Move cursor left
-- `j` - Move cursor down
-- `k` - Move cursor up
-- `l` - Move cursor right
-- Arrow keys also work for navigation
+- `i` - Enter Insert mode
+- `:` - Enter Command mode
+- `j` / `Down Arrow` - Move cursor down
+- `k` / `Up Arrow` - Move cursor up
+- `h` / `Left Arrow` - Move cursor left
+- `l` / `Right Arrow` - Move cursor right
+- `Ctrl+t` - Cycle through available themes
+- `Ctrl+c` - Quit
 
 ### Insert Mode
 
-- `Escape` - Return to normal mode
+- `Esc` - Return to Normal mode
+- Arrow keys - Navigate through text
 - `Enter` - Insert new line
 - `Backspace` - Delete character before cursor
 
@@ -89,30 +91,26 @@ vimjs
 
 ### Changing Editor Theme
 
-VimJS supports multiple beautiful themes that enhance syntax highlighting:
+You can change the theme using either:
 
-1. In Normal mode, press `:` to enter Command mode
-2. Type `cs theme-name` or `colorscheme theme-name` (e.g., `:cs nord`)
-3. Press `Enter` to apply the theme
+1. **Command Mode**: Enter command mode with `:` and type `cs <theme-name>` or `colorscheme <theme-name>` and press Enter.
+   Example: `:cs dracula`
+
+2. **Keyboard Shortcut**: Press `Ctrl+t` in normal mode to quickly cycle through all available themes.
 
 Available themes:
-- `dracula` - Default theme with vibrant colors
-- `nord` - Cool blue-based color scheme
-- `tokyo-night` - Dark theme inspired by Tokyo at night
-- `one-dark` - Atom-inspired dark theme
-- `solarized` - Classic solarized dark theme
+- dracula
+- nord
+- tokyo-night
+- one-dark
+- solarized
 
-To list all available themes:
-1. Enter Command mode with `:`
-2. Type `themes`
-3. Press `Enter`
+## Recent Improvements
 
-### Troubleshooting Command Mode
-
-If you can't see what you're typing in Command mode:
-- Check that the status bar at the bottom of the screen is visible
-- Press `Esc` and try entering Command mode again with `:`
-- If text is still not visible, try resizing your terminal window
+- **Enhanced Character Display**: Fixed issues with special characters like quotes (`"`) and other symbols to ensure they display correctly
+- **Improved File Saving**: Added more reliable file saving functionality, ensuring directories exist before saving
+- **Theme Cycling Shortcut**: Added `Ctrl+t` shortcut to quickly cycle through available themes
+- **Proper HTML Entity Decoding**: Characters are now properly decoded for display in the editor
 
 ## Syntax Highlighting
 

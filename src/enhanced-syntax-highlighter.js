@@ -691,24 +691,41 @@ class SyntaxHighlighter {
     
     let match;
     while ((match = regex.exec(html)) !== null) {
+      let text;
       if (match[3]) {
         // Plain text
-        tokens.push({ class: 'default', text: match[3] });
+        text = this.decodeHtmlEntities(match[3]);
+        tokens.push({ class: 'default', text: text });
       } else {
         // Highlighted token
-        tokens.push({ class: match[1], text: match[2] });
+        text = this.decodeHtmlEntities(match[2]);
+        tokens.push({ class: match[1], text: text });
       }
     }
     
-    // Cache the parsed tokens
-    if (this.tokenCache.size >= this.maxCacheSize) {
-      // Clear part of cache if it gets too big
-      const keys = Array.from(this.tokenCache.keys()).slice(0, 1000);
-      keys.forEach(key => this.tokenCache.delete(key));
+    // Add to cache if not too large
+    if (this.tokenCache.size < this.maxCacheSize) {
+      this.tokenCache.set(html, tokens);
     }
-    this.tokenCache.set(html, tokens);
     
     return tokens;
+  }
+
+  /**
+   * Decode HTML entities to their actual characters
+   * @param {string} text - Text with HTML entities
+   * @returns {string} - Decoded text
+   */
+  decodeHtmlEntities(text) {
+    return text
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&amp;/g, '&')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
+      .replace(/&#(\d+);/g, (_, dec) => String.fromCharCode(parseInt(dec, 10)));
   }
 
   /**

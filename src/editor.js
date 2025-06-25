@@ -141,6 +141,12 @@ class Editor {
       case ':':
         this.modeManager.setCommandMode();
         break;
+      // Theme switching shortcut
+      case 't':
+        if (key.ctrl) {
+          this.cycleTheme();
+        }
+        break;
       // Navigation keys
       case 'h':
         this.buffer.moveCursorLeft();
@@ -399,6 +405,22 @@ class Editor {
    */
   getCurrentTheme() {
     return this.syntaxHighlighter.getCurrentTheme();
+  }
+
+  /**
+   * Cycle to the next available theme
+   * @returns {boolean} - Success status
+   */
+  cycleTheme() {
+    const themes = this.getThemes();
+    const currentTheme = this.getCurrentTheme();
+    const currentIndex = themes.indexOf(currentTheme);
+    
+    // Get next theme in the list
+    const nextIndex = (currentIndex + 1) % themes.length;
+    const nextTheme = themes[nextIndex];
+    
+    return this.setTheme(nextTheme);
   }
 }
 

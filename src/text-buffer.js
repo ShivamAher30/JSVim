@@ -56,11 +56,19 @@ class TextBuffer {
       }
 
       const absPath = path.resolve(this.filePath);
+      
+      // Ensure the directory exists
+      const dirPath = path.dirname(absPath);
+      if (!fs.existsSync(dirPath)) {
+        fs.mkdirpSync(dirPath);
+      }
+      
       fs.writeFileSync(absPath, this.content.join('\n'), 'utf8');
       this.modified = false;
       this.isNewFile = false;
       return true;
     } catch (error) {
+      console.error(`Failed to save file: ${error.message}`);
       return false;
     }
   }
