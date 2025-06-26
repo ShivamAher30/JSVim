@@ -1,5 +1,5 @@
 {
-  "name": "vimjs",
+  "name": "@shiv/vimjs",
   "version": "1.0.0",
   "description": "A Vim-inspired terminal-based text editor with AI-powered code generation and syntax highlighting",
   "main": "src/index.js",
@@ -43,11 +43,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/vimjs.git"
+    "url": "https://github.com/ShivamAher30/VimJs"
   },
-  "homepage": "https://github.com/your-username/vimjs#readme",
+  "homepage": "https://github.com/ShivamAher30/VimJs",
   "bugs": {
-    "url": "https://github.com/your-username/vimjs/issues"
+    "url": "https://github.com/ShivamAher30/VimJs/bugs"
   },
   "engines": {
     "node": ">=14.0.0"
