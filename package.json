@@ -1,26 +1,57 @@
 {
   "name": "vimjs",
   "version": "1.0.0",
-  "description": "A Vim-inspired terminal-based text editor written in JavaScript",
+  "description": "A Vim-inspired terminal-based text editor with AI-powered code generation and syntax highlighting",
   "main": "src/index.js",
   "bin": {
     "vimjs": "./bin/vimjs.js"
   },
   "scripts": {
     "test": "node test/test-syntax.js",
+    "test:all": "npm run test && node test-ai-integration.js && node test-sanitization-fix.js",
+    "test:ai": "node test-ai-integration.js",
+    "test:sanitization": "node test-sanitization-fix.js",
+    "test:generation": "node test-code-generation.js",
+    "test:package": "node test-package.js",
     "start": "node bin/vimjs.js",
     "setup-ai": "node setup-ai.js",
-    "test-ai": "node test-integration-full.js"
+    "prepublishOnly": "npm run test:package",
+    "postinstall": "echo 'Run `vimjs setup-ai` to configure AI features (optional)'"
   },
+  "files": [
+    "bin/",
+    "src/",
+    "README.md",
+    "LICENSE",
+    ".env.example",
+    "setup-ai.js"
+  ],
   "keywords": [
     "vim",
     "text-editor",
     "terminal",
     "cli",
-    "editor"
+    "editor",
+    "ai",
+    "code-generation",
+    "syntax-highlighting",
+    "llm",
+    "groq",
+    "programming"
   ],
-  "author": "",
+  "author": "VimJS Contributors",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/vimjs.git"
+  },
+  "homepage": "https://github.com/your-username/vimjs#readme",
+  "bugs": {
+    "url": "https://github.com/your-username/vimjs/issues"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
   "dependencies": {
     "blessed": "^0.1.81",
     "cardinal": "^2.1.1",

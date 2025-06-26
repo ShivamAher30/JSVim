@@ -275,14 +275,22 @@ COMPLETION:`;
     // Protect includes and comparison operators first
     const protectedIncludes = [];
     
-    // First, fix any missing # in includes that got stripped
-    cleaned = cleaned.replace(/^(\s*)include\s*<([^>]+)>/gm, '$1#include <$2>');
-    
-    // Protect both proper and repaired includes
+    // Protect ALL includes BEFORE any processing - this is the FIRST thing we do
     cleaned = cleaned.replace(/#include\s*<[^>]+>/g, (match, index) => {
       const placeholder = `__INCLUDE_${protectedIncludes.length}__`;
       protectedIncludes.push({ placeholder, original: match });
       return placeholder;
+    });
+    
+    // ALSO protect includes that lost their # during HTML processing
+    cleaned = cleaned.replace(/\binclude\s*<[^>]+>/g, (match, index) => {
+      // Only if not already protected
+      if (!cleaned.includes(`__INCLUDE_${index}__`)) {
+        const placeholder = `__INCLUDE_${protectedIncludes.length}__`;
+        protectedIncludes.push({ placeholder, original: '#' + match });
+        return placeholder;
+      }
+      return match;
     });
     
     const protectedComparisons = [];
@@ -632,13 +640,51 @@ CODE:`;
     // STEP 2: Protect valid code constructs before HTML removal
     const protectedPatterns = [];
     
-    // First, fix any missing # in includes that got stripped
-    cleaned = cleaned.replace(/^(\s*)include\s*<([^>]+)>/gm, '$1#include <$2>');
-    
-    // Protect C++ includes
+    // Protect C++ includes FIRST - these are the most critical to preserve
     cleaned = cleaned.replace(/#include\s*<[^>]+>/g, (match, index) => {
       const placeholder = `__INCLUDE_${index}__`;
       protectedPatterns.push({ placeholder, original: match });
+      return placeholder;
+    });
+    
+    // Also protect includes without # that might be accidentally broken
+    cleaned = cleaned.replace(/\binclude\s*<[^>]+>/g, (match, index) => {
+      const placeholder = `__BROKEN_INCLUDE_${index}__`;
+      protectedPatterns.push({ placeholder, original: '#' + match });
+      return placeholder;
+    });
+    
+    // Protect double angle brackets BEFORE single ones
+    cleaned = cleaned.replace(/<<\s*/g, (match, index) => {
+      const placeholder = `__LSHIFT_${index}__`;
+      protectedPatterns.push({ placeholder, original: match });
+      return placeholder;
+    });
+    
+    cleaned = cleaned.replace(/>>\s*/g, (match, index) => {
+      const placeholder = `__RSHIFT_${index}__`;
+      protectedPatterns.push({ placeholder, original: match });
+      return placeholder;
+    });
+    
+    // Protect stream operators MORE CAREFULLY - handle all patterns
+    cleaned = cleaned.replace(/(std::)?(cout|cin|cerr)\s+("[^"]*"|\w+)\s+(std::)?endl/g, (match, std1, stream, content, std2, offset) => {
+      const placeholder = `__STREAM_ENDL_${offset}__`;
+      const fixed = `${std1 || ''}${stream} << ${content} << ${std2 || ''}endl`;
+      protectedPatterns.push({ placeholder, original: fixed });
+      return placeholder;
+    });
+    
+    cleaned = cleaned.replace(/(std::)?(cout|cin|cerr)\s+("[^"]*"|\w+)/g, (match, std1, stream, content, offset) => {
+      const placeholder = `__STREAM_${offset}__`;
+      const fixed = `${std1 || ''}${stream} << ${content}`;
+      protectedPatterns.push({ placeholder, original: fixed });
+      return placeholder;
+    });
+    
+    cleaned = cleaned.replace(/(std::)?(cout|cin|cerr)\s+/g, (match, std1, stream, offset) => {
+      const placeholder = `__STREAM_BARE_${offset}__`;
+      protectedPatterns.push({ placeholder, original: match.replace(/\s+$/, ' << ') });
       return placeholder;
     });
     
@@ -659,13 +705,6 @@ CODE:`;
     // Protect general comparison operators
     cleaned = cleaned.replace(/\w+\s*[<>]=?\s*\w+/g, (match, index) => {
       const placeholder = `__COMP_${index}__`;
-      protectedPatterns.push({ placeholder, original: match });
-      return placeholder;
-    });
-    
-    // Protect stream operators
-    cleaned = cleaned.replace(/(std::)?(cout|cin|cerr)\s*[<>]{1,2}\s*/g, (match, index) => {
-      const placeholder = `__STREAM_${index}__`;
       protectedPatterns.push({ placeholder, original: match });
       return placeholder;
     });
@@ -691,24 +730,13 @@ CODE:`;
     cleaned = cleaned.replace(/\x1b\][\d;]*;[^\x07]*\x07/g, '');
     cleaned = cleaned.replace(/\[[\d;]*m/g, ''); // Additional color codes
     
-    // STEP 4: Fix common C++ constructs that get broken during HTML removal
-    cleaned = cleaned.replace(/include\s+<([^>]+)>/g, '#include <$1>'); // Fix missing # in includes
-    cleaned = cleaned.replace(/std::\s*cout\s+"/g, 'std::cout << "'); // Fix cout with string
-    cleaned = cleaned.replace(/std::\s*cout\s+([a-zA-Z_][a-zA-Z0-9_]*)/g, 'std::cout << $1'); // Fix cout with variables
-    cleaned = cleaned.replace(/cout\s+"/g, 'cout << "'); // Fix cout statements
-    cleaned = cleaned.replace(/cout\s+([a-zA-Z_][a-zA-Z0-9_]*)/g, 'cout << $1'); // Fix cout with variables
-    cleaned = cleaned.replace(/(\w+)\s+std::endl/g, '$1 << std::endl'); // Fix endl statements
-    cleaned = cleaned.replace(/(\w+)\s+endl/g, '$1 << endl'); // Fix endl without std
-    cleaned = cleaned.replace(/#include\s+iostream>/g, '#include <iostream>'); // Fix includes without opening <
-    cleaned = cleaned.replace(/#include\s+([a-zA-Z][a-zA-Z0-9._]*)/g, '#include <$1>'); // Fix includes missing brackets
-    
-    // Fix general stream operators that got mangled
-    cleaned = cleaned.replace(/(\w+)\s+"([^"]+)"/g, '$1 << "$2"'); // Fix variable << "string"
-    cleaned = cleaned.replace(/(\w+)\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*;/g, '$1 << $2;'); // Fix variable << variable
-    
-    // Fix broken function keywords and other fragments
+    // STEP 4: Fix common constructs that might still be broken
+    // Remove any remaining HTML-like fragments
     cleaned = cleaned.replace(/^<(\w+)/gm, '$1'); // Fix lines starting with <word
     cleaned = cleaned.replace(/(\w+)<\s/g, '$1 '); // Fix word< patterns
+    
+    // Fix missing # in includes - be more careful
+    cleaned = cleaned.replace(/^(\s*)include\s*<([^>]+)>/gm, '$1#include <$2>');
     
     // Remove explanatory text at the beginning or end
     const explanationPatterns = [
@@ -736,13 +764,20 @@ CODE:`;
     cleaned = cleaned.replace(/^\s*\n+/, ''); // Remove leading empty lines
     cleaned = cleaned.replace(/\n\s*$/, '\n'); // Ensure single trailing newline
     
-    // Fix specific whitespace issues from our tests - be more careful about indentation
-    // Only fix clear single-space indentation issues, preserve others
-    cleaned = cleaned.replace(/\n /g, '\n  '); // Change single space to double space indentation
+    // PRESERVE indentation - only fix clearly broken single-space indentation to 2 spaces
+    // but only if the line contains actual code (not empty lines)
+    const codeLines = cleaned.split('\n');
+    const fixedLines = codeLines.map(line => {
+      // Only fix lines that start with exactly one space and contain non-whitespace
+      if (/^ [^\s]/.test(line)) {
+        return '  ' + line.substring(1); // Change 1 space to 2 spaces
+      }
+      return line; // Leave other indentation alone
+    });
+    cleaned = fixedLines.join('\n');
     
     // Remove lines that are just HTML fragments or broken syntax
-    const lines = cleaned.split('\n');
-    const cleanLines = lines.filter(line => {
+    const cleanLines = cleaned.split('\n').filter(line => {
       const trimmed = line.trim();
       // Filter out lines that look like HTML fragments
       return !(
@@ -750,7 +785,7 @@ CODE:`;
         /^\/\s*(span|div|p|code|pre)\s*$/.test(trimmed) ||
         /^hljs-/.test(trimmed) ||
         /^class=/.test(trimmed) ||
-        (trimmed === '' && lines.length > 1) // Remove empty lines only if multiple lines
+        (trimmed === '' && cleaned.split('\n').length > 1) // Remove empty lines only if multiple lines
       );
     });
     
