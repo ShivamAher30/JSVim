@@ -1,6 +1,6 @@
 {
-  "name": "jsbased-vim",
-  "version": "1.0.0",
+  "name": "jsvim-ai",
+  "version": "1.0.1",
   "description": "A Vim-inspired terminal-based text editor with AI-powered code generation and syntax highlighting",
   "main": "src/index.js",
   "bin": {
