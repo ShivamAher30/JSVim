@@ -17,7 +17,9 @@ A modern, feature-rich terminal-based text editor inspired by Vim, enhanced with
 - **File Operations** - Save, load, and manage files efficiently
 
 ### 🤖 AI-Powered Features
+![Recording 2025-06-26 141900](https://github.com/user-attachments/assets/4a30856f-3921-47ef-b6d0-1e0b462e1cf5)
 - **Intelligent Code Completion** - Context-aware suggestions using Groq API
+-    
 - **Natural Language Code Generation** - Generate code from plain English descriptions
 - **Code Extension** - Extend existing code with new functionality
 - **Feature Implementation** - Implement specific features on command
@@ -26,6 +28,7 @@ A modern, feature-rich terminal-based text editor inspired by Vim, enhanced with
 - 
 
 ### 🎨 Visual Features
+![Recording 2025-06-26 141846](https://github.com/user-attachments/assets/a0202e2f-a371-4b0f-9ada-76bf554fe7c6)
 - **Real-time Syntax Highlighting** - Enhanced highlighting with multiple language support
 - **Animated Welcome Screen** - Stylish startup animations
 - **Status Line** - Shows current mode, file info, cursor position, and AI status
