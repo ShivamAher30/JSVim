@@ -4,14 +4,14 @@
   "description": "A Vim-inspired terminal-based text editor with AI-powered code generation and syntax highlighting",
   "main": "src/index.js",
   "bin": {
-    "vimjs": "./bin/vimjs.js"
+    "jsvim": "./bin/jsvim.js"
   },
   "scripts": {
     "test:package": "node -e \"console.log('Package validation passed')\"",
-    "start": "node bin/vimjs.js",
+    "start": "node bin/jsvim.js",
     "setup-ai": "node setup-ai.js",
     "prepublishOnly": "npm run test:package",
-    "postinstall": "echo 'Run `vimjs setup-ai` to configure AI features (optional)'"
+    "postinstall": "echo 'Run `jsvim setup-ai` to configure AI features (optional)'"
   },
   "publishConfig": {
     "access": "public"
@@ -37,15 +37,15 @@
     "groq",
     "programming"
   ],
-  "author": "VimJS Contributors",
+  "author": "JSVim Contributors",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ShivamAher30/VimJs"
+    "url": "https://github.com/ShivamAher30/JSVim"
   },
-  "homepage": "https://github.com/ShivamAher30/VimJs",
+  "homepage": "https://github.com/ShivamAher30/JSVim",
   "bugs": {
-    "url": "https://github.com/ShivamAher30/VimJs/bugs"
+    "url": "https://github.com/ShivamAher30/JSVim/bugs"
   },
   "engines": {
     "node": ">=14.0.0"
@@ -60,6 +60,7 @@
     "fs-extra": "^11.1.1",
     "gradient-string": "^3.0.0",
     "highlight.js": "^11.11.1",
+    "jsbased-vim": "^1.0.0",
     "nanospinner": "^1.2.2",
     "node-fetch": "^2.7.0",
     "ora": "^8.2.0",

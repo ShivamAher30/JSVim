@@ -1,5 +1,5 @@
 /**
- * Enhanced SyntaxHighlighter for VimJS editor with comprehensive language support
+ * Enhanced SyntaxHighlighter for JSVim editor with comprehensive language support
  */
 const hljs = require('highlight.js');
 const path = require('path');

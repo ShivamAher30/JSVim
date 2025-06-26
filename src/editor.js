@@ -53,7 +53,7 @@ class Editor {
     // Create screen
     this.screen = blessed.screen({
       smartCSR: true,
-      title: `VimJS - ${this.buffer.getFilename()}`
+      title: `JSVim - ${this.buffer.getFilename()}`
     });
     
     // Initialize animations

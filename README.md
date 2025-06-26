@@ -1,8 +1,8 @@
-# VimJS - AI-Powered Vim-Style Terminal Editor 🚀
+# JSVim - AI-Powered Vim-Style Terminal Editor 🚀
 
 A modern, feature-rich terminal-based text editor inspired by Vim, enhanced with AI-powered code completion and generation capabilities using the Groq API.
 
-![VimJS Demo](https://img.shields.io/badge/Editor-VimJS-blue)
+![JSVim Demo](https://img.shields.io/badge/Editor-JSVim-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Node.js](https://img.shields.io/badge/node.js-v16+-brightgreen)
 
@@ -61,7 +61,7 @@ A modern, feature-rich terminal-based text editor inspired by Vim, enhanced with
    ```bash
    npm start
    # or
-   node bin/vimjs.js [filename]
+   node bin/jsvim.js [filename]
    ```
 
 ## ⌨️ Keyboard Shortcuts
@@ -346,7 +346,7 @@ This project is licensed under the MIT License. See the LICENSE file for details
 
 ---
 
-**Happy Coding with VimJS! 🚀✨**
+**Happy Coding with JSVim! 🚀✨**
 
 *Made with ❤️ for developers who love terminal-based tools and AI-assisted coding.*
 
@@ -370,10 +370,10 @@ To enable AI-powered code autocompletion:
 
 ```bash
 # Open a file (creates it if doesn't exist)
-vimjs filename.txt
+jsvim filename.txt
 
 # Open untitled buffer
-vimjs
+jsvim
 ```
 
 ## Key Bindings
@@ -445,7 +445,7 @@ Available themes:
 
 ## AI-Powered Code Autocompletion
 
-VimJS now includes intelligent code autocompletion powered by Groq's large language models.
+JSVim now includes intelligent code autocompletion powered by Groq's large language models.
 
 ### Features
 
@@ -525,7 +525,7 @@ VimJS now includes intelligent code autocompletion powered by Groq's large langu
 
 ## Syntax Highlighting
 
-VimJS supports comprehensive syntax highlighting for 30+ programming languages, including:
+JSVim supports comprehensive syntax highlighting for 30+ programming languages, including:
 
 - JavaScript/TypeScript/JSX/TSX
 - Python
@@ -544,7 +544,7 @@ VimJS supports comprehensive syntax highlighting for 30+ programming languages, 
 
 ### Language Detection
 
-VimJS automatically detects languages based on:
+JSVim automatically detects languages based on:
 
 1. File extension (`.js`, `.py`, `.cpp`, etc.)
 2. File content (shebang lines, language-specific patterns)
@@ -574,7 +574,7 @@ or
 
 ### Performance Optimizations
 
-For large files, VimJS uses optimized highlighting to maintain editor responsiveness.
+For large files, JSVim uses optimized highlighting to maintain editor responsiveness.
 
 ## Dependencies
 

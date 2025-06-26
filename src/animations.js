@@ -1,5 +1,5 @@
 /**
- * Animations for VimJS editor
+ * Animations for JSVim editor
  */
 const blessed = require('blessed');
 const figlet = require('figlet');
@@ -58,8 +58,8 @@ class Animations {
         this._createAnimationContainer();
       }
       
-      // Generate ASCII art for "VimJS"
-      const asciiArt = figlet.textSync('VimJS', {
+      // Generate ASCII art for "JSVim"
+      const asciiArt = figlet.textSync('JSVim', {
         font: 'Standard',
         horizontalLayout: 'default',
         verticalLayout: 'default',

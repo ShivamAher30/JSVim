@@ -1,6 +1,6 @@
-# Publishing Guide for VimJS
+# Publishing Guide for JSVim
 
-This guide walks you through publishing VimJS to npm.
+This guide walks you through publishing JSVim to npm.
 
 ## Pre-Publishing Checklist
 
@@ -23,7 +23,7 @@ npm publish --dry-run
 
 # Check what files will be included
 npm pack
-tar -tzf vimjs-1.0.0.tgz
+tar -tzf jsvim-1.0.0.tgz
 ```
 
 ### 3. Update Repository Information
@@ -32,11 +32,11 @@ Before publishing, update the repository URLs in `package.json`:
 {
   "repository": {
     "type": "git",
-    "url": "https://github.com/YOUR-USERNAME/vimjs.git"
+    "url": "https://github.com/YOUR-USERNAME/jsvim.git"
   },
-  "homepage": "https://github.com/YOUR-USERNAME/vimjs#readme",
+  "homepage": "https://github.com/YOUR-USERNAME/jsvim#readme",
   "bugs": {
-    "url": "https://github.com/YOUR-USERNAME/vimjs/issues"
+    "url": "https://github.com/YOUR-USERNAME/jsvim/issues"
   }
 }
 ```
@@ -73,18 +73,18 @@ npm publish
 ### 4. Verify Installation
 ```bash
 # Install globally and test
-npm install -g vimjs
-vimjs --help
-vimjs test.txt
+npm install -g jsvim
+jsvim --help
+jsvim test.txt
 ```
 
 ## Package Structure
 
 Files included in the npm package:
 ```
-vimjs/
+jsvim/
 ├── bin/
-│   └── vimjs.js           # CLI entry point
+│   └── jsvim.js           # CLI entry point
 ├── src/
 │   ├── index.js           # Main module
 │   ├── editor.js          # Core editor
@@ -154,12 +154,12 @@ git push origin v1.0.0
 1. **Permission denied**: Make sure bin script is executable
 2. **Module not found**: Check all dependencies are listed
 3. **Command not found**: Verify bin field in package.json
-4. **AI features not working**: Run `vimjs setup-ai` after install
+4. **AI features not working**: Run `jsvim setup-ai` after install
 
 ### Support
 - File issues on GitHub
 - Check README.md for usage instructions
-- Run `vimjs --help` for command reference
+- Run `jsvim --help` for command reference
 
 ## Maintenance
 
