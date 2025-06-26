@@ -7,12 +7,7 @@
     "vimjs": "./bin/vimjs.js"
   },
   "scripts": {
-    "test": "node test/test-syntax.js",
-    "test:all": "npm run test && node test-ai-integration.js && node test-sanitization-fix.js",
-    "test:ai": "node test-ai-integration.js",
-    "test:sanitization": "node test-sanitization-fix.js",
-    "test:generation": "node test-code-generation.js",
-    "test:package": "node test-package.js",
+
     "start": "node bin/vimjs.js",
     "setup-ai": "node setup-ai.js",
     "prepublishOnly": "npm run test:package",
