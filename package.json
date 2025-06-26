@@ -1,6 +1,6 @@
 {
   "name": "jsvim-ai",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A Vim-inspired terminal-based text editor with AI-powered code generation and syntax highlighting",
   "main": "src/index.js",
   "bin": {
@@ -60,7 +60,6 @@
     "fs-extra": "^11.1.1",
     "gradient-string": "^3.0.0",
     "highlight.js": "^11.11.1",
-    "jsbased-vim": "^1.0.0",
     "nanospinner": "^1.2.2",
     "node-fetch": "^2.7.0",
     "ora": "^8.2.0",

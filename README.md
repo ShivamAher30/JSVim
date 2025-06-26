@@ -33,12 +33,46 @@ A modern, feature-rich terminal-based text editor inspired by Vim, enhanced with
 
 ## 🚀 Quick Start
 
+### Get Started in 30 seconds!
+
+```bash
+# Install globally via npm
+npm install -g jsvim-ai
+
+# Create .env file with your Groq API key
+echo "GROQ_API_KEY=your_groq_api_key_here" > .env
+
+# Start editing!
+jsvim myfile.js
+```
+
 ### Prerequisites
 - Node.js v16 or higher
 - Terminal with 256-color support
 - Groq API key (for AI features)
 
 ### Installation
+
+#### Option 1: Install from npm (Recommended)
+
+1. **Install globally:**
+   ```bash
+   npm install -g jsvim-ai
+   ```
+
+2. **Set up AI features (optional but recommended):**
+   ```bash
+   # Create a .env file in your current working directory or home directory
+   echo "GROQ_API_KEY=your_groq_api_key_here" > .env
+   # Or create it manually and add your Groq API key
+   ```
+
+3. **Start editing:**
+   ```bash
+   jsvim [filename]
+   ```
+
+#### Option 2: Clone from source
 
 1. **Clone the repository:**
    ```bash
@@ -221,6 +255,33 @@ Transform plain English into working code:
 ## 🔧 Configuration
 
 ### Environment Variables
+
+#### For npm installation:
+When you install JSVim via npm, you can create a `.env` file in any of these locations (checked in order):
+
+1. **Current working directory** (where you run the `jsvim` command):
+   ```bash
+   # Create .env in your current directory
+   echo "GROQ_API_KEY=your_groq_api_key_here" > .env
+   ```
+
+2. **Your home directory**:
+   ```bash
+   # Windows
+   echo "GROQ_API_KEY=your_groq_api_key_here" > %USERPROFILE%\.env
+   
+   # macOS/Linux
+   echo "GROQ_API_KEY=your_groq_api_key_here" > ~/.env
+   ```
+
+3. **Global configuration directory**:
+   ```bash
+   # Windows: %APPDATA%\jsvim\.env
+   # macOS: ~/Library/Preferences/jsvim/.env
+   # Linux: ~/.config/jsvim/.env
+   ```
+
+#### For source installation:
 Create a `.env` file in the project root:
 
 ```bash
@@ -228,6 +289,18 @@ Create a `.env` file in the project root:
 GROQ_API_KEY=your_groq_api_key_here
 
 # AI Settings (optional)
+AI_MODEL=llama3-8b-8192
+AI_ENABLED=true
+```
+
+### .env File Format
+Your `.env` file should contain:
+
+```bash
+# Required for AI features
+GROQ_API_KEY=your_groq_api_key_here
+
+# Optional settings
 AI_MODEL=llama3-8b-8192
 AI_ENABLED=true
 ```
@@ -297,6 +370,22 @@ npm start existing-file.py
 - Check internet connection
 - Verify API key is valid
 - Try `:toggleAI` to restart AI service
+
+#### Environment File (.env) Issues
+**For npm installations:**
+- Check if `.env` file exists in your current directory: `ls .env` (Linux/macOS) or `dir .env` (Windows)
+- If not found, JSVim looks in your home directory: `~/.env`
+- Verify the file format: should contain `GROQ_API_KEY=your_key_here` (no quotes needed)
+- Make sure there are no extra spaces around the `=` sign
+- Try creating the file in different locations in this order:
+  1. Current working directory where you run `jsvim`
+  2. Your home directory (`~/` or `%USERPROFILE%`)
+  3. Global config directory (varies by OS)
+- Use `:ai` command in JSVim to check if the API key is detected
+
+**For source installations:**
+- Ensure `.env` file is in the project root directory
+- Copy from `.env.example` if available: `cp .env.example .env`
 
 #### Syntax Highlighting Issues
 - File extension must be recognized
