@@ -1,5 +1,5 @@
 {
-  "name": "@shiv/vimjs",
+  "name": "jsbased-vim",
   "version": "1.0.0",
   "description": "A Vim-inspired terminal-based text editor with AI-powered code generation and syntax highlighting",
   "main": "src/index.js",
