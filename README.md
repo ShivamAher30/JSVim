@@ -23,6 +23,7 @@ A modern, feature-rich terminal-based text editor inspired by Vim, enhanced with
 - **Feature Implementation** - Implement specific features on command
 - **Beautiful Animations** - Visual feedback during AI operations
 - **Clean Output** - Advanced sanitization removes HTML, ANSI, and markdown artifacts
+- 
 
 ### 🎨 Visual Features
 - **Real-time Syntax Highlighting** - Enhanced highlighting with multiple language support
@@ -32,6 +33,10 @@ A modern, feature-rich terminal-based text editor inspired by Vim, enhanced with
 - **Responsive UI** - Adapts to terminal size changes
 
 ## 🚀 Quick Start
+
+
+https://github.com/user-attachments/assets/2fbba7dc-2037-4b06-9930-1c27afe53179
+
 
 ### Get Started in 30 seconds!
 
