@@ -15,9 +15,9 @@ A modern, feature-rich terminal-based text editor inspired by Vim, enhanced with
 - **Line Numbers** - Absolute and relative line numbering
 - **Live Cursor** - Blinking cursor with smooth navigation
 - **File Operations** - Save, load, and manage files efficiently
+![Recording2025-06-26141900-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/30fd1607-4572-43f0-8fad-7f915fd3fab6)
 
 ### 🤖 AI-Powered Features
-![Recording 2025-06-26 141900](https://github.com/user-attachments/assets/4a30856f-3921-47ef-b6d0-1e0b462e1cf5)
 - **Intelligent Code Completion** - Context-aware suggestions using Groq API
 -    
 - **Natural Language Code Generation** - Generate code from plain English descriptions
@@ -28,7 +28,7 @@ A modern, feature-rich terminal-based text editor inspired by Vim, enhanced with
 - 
 
 ### 🎨 Visual Features
-![Recording 2025-06-26 141846](https://github.com/user-attachments/assets/a0202e2f-a371-4b0f-9ada-76bf554fe7c6)
+![Recording2025-06-26141846-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/94f8d4ac-e617-4b47-96ce-f4e4ef474142)
 - **Real-time Syntax Highlighting** - Enhanced highlighting with multiple language support
 - **Animated Welcome Screen** - Stylish startup animations
 - **Status Line** - Shows current mode, file info, cursor position, and AI status
@@ -36,6 +36,7 @@ A modern, feature-rich terminal-based text editor inspired by Vim, enhanced with
 - **Responsive UI** - Adapts to terminal size changes
 
 ## 🚀 Quick Start
+
 
 
 https://github.com/user-attachments/assets/2fbba7dc-2037-4b06-9930-1c27afe53179
