@@ -13,6 +13,9 @@
     "prepublishOnly": "npm run test:package",
     "postinstall": "echo 'Run `vimjs setup-ai` to configure AI features (optional)'"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "bin/",
     "src/",
